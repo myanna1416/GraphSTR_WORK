@@ -1,5 +1,4 @@
 #Model 
-library(torch)
 
 Discriminator <- nn_module(
   classname = "Discriminator",
@@ -75,7 +74,6 @@ AvgReadout <- nn_module(
     return(normalized_emb)
   }
 )
-library(torch)
 
 Encoder <- nn_module(
   classname = "Encoder",

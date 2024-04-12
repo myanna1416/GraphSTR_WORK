@@ -66,7 +66,6 @@ GraphST <- R6::R6Class(
   )
 )
 
-# Example:
 my_adata <- list()  # Assume this is your prepared spatial data
 my_adata_sc <- list()  # Assume this is your scRNA-seq data
 
@@ -275,7 +274,6 @@ GraphST$set("public", "train_map", function() {
   
   cat('Begin to learn mapping matrix...\n')
 })
-library(pbapply) # For progress bar
 
 GraphST$set("public", "train_mapping_matrix", function(emb_sp, emb_sc) {
   cat("Begin to learn mapping matrix...\n")

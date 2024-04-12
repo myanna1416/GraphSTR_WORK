@@ -74,16 +74,10 @@ search_res <- function(adata, n_clusters, use_rep, method, start, end, increment
   # Dummy placeholder for finding an optimal resolution parameter
   return(1)  # Adjust based on actual analysis
 }
-
-refine_label <- function(adata, radius, key) {
-  # Placeholder for a label refinement process
-  return(adata$obs[[key]])
-}
-
-
+#removes the noise from data set
 refine_label <- function(adata, radius = 50, key = 'label') {
   n_neigh <- radius
-  new_type <- character(0)
+  new_type <- character(0) # c()empty array in R 
   old_type <- as.character(adata$obs[[key]])
   
   # Calculate distance

@@ -1,0 +1,46 @@
+---
+title: "GraphST-R"
+output: html_notebook
+---
+
+
+```{r}
+library(SpatialExperiment)#library(Matrix) 
+library(dplyr)#similar to pandas
+library(torch)#similar to PyTorch in Python
+library(pbapply)#R Equivalent of Python's tqdm
+library(Matrix)#For sparse matrix operations
+library(R6) #Load the R6 library
+library(Dict)
+library(transport)
+library(otinference)
+library(Seurat)# Load data and create a Seurat object, analogous to using scanpy
+library(FNN) 
+library(reticulate)
+library(stats)
+library(stats)
+library(igraph)
+library(leiden)
+library(leidenAlg)
+
+
+```
+
+##Load your data in
+```{r}
+data_dir <- "data/GraphData"
+spe <- SpatialExperiment::read10xVisium(samples = data_dir,
+                                   type = "HDF5",
+                                   data = "filtered")
+```
+
+```{r}
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
