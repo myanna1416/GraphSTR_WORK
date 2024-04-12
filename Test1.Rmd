@@ -22,10 +22,9 @@ library(stats)
 library(igraph)
 library(leiden)
 library(leidenAlg)
-
-
+library(mclust)
 ```
-
+In this project, we demonstrate how to apply GraphST for identifying spatial domains on 10X Visium data. For this purpose, we analyze the sample 151673 from the dorsolateral prefrontal cortex (DLPFC) dataset. Maynard et al. have manually annotated the DLPFC layers and white matter, utilizing morphological features and gene markers.
 ##Load your data in
 ```{r}
 data_dir <- "data/GraphData"
@@ -35,7 +34,13 @@ spe <- SpatialExperiment::read10xVisium(samples = data_dir,
 ```
 
 ```{r}
+n_clusters <- 7
+graphST_model <- GraphST$new(adata=spe)
+```
 
+```{r}
+# train model
+adata = graphST_model.train()
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.

@@ -1754,7 +1754,7 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShTcGF0aWFsRXhwZXJpbWVudCkjbGlicmFyeShNYXRyaXgpIFxubGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXNcbmxpYnJhcnkodG9yY2gpI3NpbWlsYXIgdG8gUHlUb3JjaCBpbiBQeXRob25cbmxpYnJhcnkocGJhcHBseSkjUiBFcXVpdmFsZW50IG9mIFB5dGhvbidzIHRxZG1cbmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zXG5saWJyYXJ5KFI2KSAjTG9hZCB0aGUgUjYgbGlicmFyeVxubGlicmFyeShEaWN0KVxubGlicmFyeSh0cmFuc3BvcnQpXG5saWJyYXJ5KG90aW5mZXJlbmNlKVxubGlicmFyeShTZXVyYXQpIyBMb2FkIGRhdGEgYW5kIGNyZWF0ZSBhIFNldXJhdCBvYmplY3QsIGFuYWxvZ291cyB0byB1c2luZyBzY2FucHlcbmxpYnJhcnkoRk5OKSBcbmxpYnJhcnkocmV0aWN1bGF0ZSlcbmxpYnJhcnkoc3RhdHMpXG5saWJyYXJ5KHN0YXRzKVxubGlicmFyeShpZ3JhcGgpXG5saWJyYXJ5KGxlaWRlbilcbmxpYnJhcnkobGVpZGVuQWxnKVxuXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShTcGF0aWFsRXhwZXJpbWVudCkjbGlicmFyeShNYXRyaXgpIFxubGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXNcbmxpYnJhcnkodG9yY2gpI3NpbWlsYXIgdG8gUHlUb3JjaCBpbiBQeXRob25cbmxpYnJhcnkocGJhcHBseSkjUiBFcXVpdmFsZW50IG9mIFB5dGhvbidzIHRxZG1cbmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zXG5saWJyYXJ5KFI2KSAjTG9hZCB0aGUgUjYgbGlicmFyeVxubGlicmFyeShEaWN0KVxubGlicmFyeSh0cmFuc3BvcnQpXG5saWJyYXJ5KG90aW5mZXJlbmNlKVxubGlicmFyeShTZXVyYXQpIyBMb2FkIGRhdGEgYW5kIGNyZWF0ZSBhIFNldXJhdCBvYmplY3QsIGFuYWxvZ291cyB0byB1c2luZyBzY2FucHlcbmxpYnJhcnkoRk5OKSBcbmxpYnJhcnkocmV0aWN1bGF0ZSlcbmxpYnJhcnkoc3RhdHMpXG5saWJyYXJ5KHN0YXRzKVxubGlicmFyeShpZ3JhcGgpXG5saWJyYXJ5KGxlaWRlbilcbmxpYnJhcnkobGVpZGVuQWxnKVxubGlicmFyeShtY2x1c3QpXG5gYGAifQ== -->
 <pre class="r"><code>library(SpatialExperiment)#library(Matrix) 
 library(dplyr)#similar to pandas
 library(torch)#similar to PyTorch in Python
@@ -1772,11 +1772,24 @@ library(stats)
 library(igraph)
 library(leiden)
 library(leidenAlg)
-</code></pre>
+library(mclust)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICAgIF9fICAgICAgICAgICBfXyBcbiAgIF9fX18gX19fICBfX19fXy8gL18gIF9fX19fX18vIC9fXG4gIC8gX18gYF9fIFxcLyBfX18vIC8gLyAvIC8gX19fLyBfXy9cbiAvIC8gLyAvIC8gLyAvX18vIC8gL18vIChfXyAgKSAvXyAgXG4vXy8gL18vIC9fL1xcX19fL18vXFxfXyxfL19fX18vXFxfXy8gICB2ZXJzaW9uIDYuMVxuVHlwZSAnY2l0YXRpb24oXCJtY2x1c3RcIiknIGZvciBjaXRpbmcgdGhpcyBSIHBhY2thZ2UgaW4gcHVibGljYXRpb25zLlxuIn0= -->
+<pre><code>                   __           __ 
+   ____ ___  _____/ /_  _______/ /_
+  / __ `__ \/ ___/ / / / / ___/ __/
+ / / / / / / /__/ / /_/ (__  ) /_  
+/_/ /_/ /_/\___/_/\__,_/____/\__/   version 6.1
+Type &#39;citation(&quot;mclust&quot;)&#39; for citing this R package in publications.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>##Load your data in</p>
+<p>In this project, we demonstrate how to apply GraphST for identifying
+spatial domains on 10X Visium data. For this purpose, we analyze the
+sample 151673 from the dorsolateral prefrontal cortex (DLPFC) dataset.
+Maynard et al. have manually annotated the DLPFC layers and white
+matter, utilizing morphological features and gene markers. ##Load your
+data in</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gXCJkYXRhL0dyYXBoRGF0YVwiXG5zcGUgPC0gU3BhdGlhbEV4cGVyaW1lbnQ6OnJlYWQxMHhWaXNpdW0oc2FtcGxlcyA9IGRhdGFfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlID0gXCJIREY1XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBcImZpbHRlcmVkXCIpXG5gYGAifQ== -->
@@ -1789,6 +1802,22 @@ spe &lt;- SpatialExperiment::read10xVisium(samples = data_dir,
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl9jbHVzdGVycyA8LSA3XG5ncmFwaFNUX21vZGVsIDwtIEdyYXBoU1QkbmV3KGFkYXRhPXNwZSlcbmBgYCJ9 -->
+<pre class="r"><code>n_clusters &lt;- 7
+graphST_model &lt;- GraphST$new(adata=spe)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyB0cmFpbiBtb2RlbFxuYWRhdGEgPSBncmFwaFNUX21vZGVsLnRyYWluKClcbmBgYCJ9 -->
+<pre class="r"><code># train model
+adata = graphST_model.train()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZ3JhcGhTVF9tb2RlbC50cmFpbigpIDogXG4gIGNvdWxkIG5vdCBmaW5kIGZ1bmN0aW9uIFwiZ3JhcGhTVF9tb2RlbC50cmFpblwiXG4ifQ== -->
+<pre><code>Error in graphST_model.train() : 
+  could not find function &quot;graphST_model.train&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
@@ -1802,7 +1831,7 @@ run any R code chunks. Instead, the output of the chunk when it was last
 run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiR3JhcGhTVC1SIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKYGBge3J9CmxpYnJhcnkoU3BhdGlhbEV4cGVyaW1lbnQpI2xpYnJhcnkoTWF0cml4KSAKbGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXMKbGlicmFyeSh0b3JjaCkjc2ltaWxhciB0byBQeVRvcmNoIGluIFB5dGhvbgpsaWJyYXJ5KHBiYXBwbHkpI1IgRXF1aXZhbGVudCBvZiBQeXRob24ncyB0cWRtCmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zCmxpYnJhcnkoUjYpICNMb2FkIHRoZSBSNiBsaWJyYXJ5CmxpYnJhcnkoRGljdCkKbGlicmFyeSh0cmFuc3BvcnQpCmxpYnJhcnkob3RpbmZlcmVuY2UpCmxpYnJhcnkoU2V1cmF0KSMgTG9hZCBkYXRhIGFuZCBjcmVhdGUgYSBTZXVyYXQgb2JqZWN0LCBhbmFsb2dvdXMgdG8gdXNpbmcgc2NhbnB5CmxpYnJhcnkoRk5OKSAKbGlicmFyeShyZXRpY3VsYXRlKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KGlncmFwaCkKbGlicmFyeShsZWlkZW4pCmxpYnJhcnkobGVpZGVuQWxnKQoKCmBgYAoKIyNMb2FkIHlvdXIgZGF0YSBpbgpgYGB7cn0KZGF0YV9kaXIgPC0gImRhdGEvR3JhcGhEYXRhIgpzcGUgPC0gU3BhdGlhbEV4cGVyaW1lbnQ6OnJlYWQxMHhWaXNpdW0oc2FtcGxlcyA9IGRhdGFfZGlyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHR5cGUgPSAiSERGNSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9ICJmaWx0ZXJlZCIpCmBgYAoKYGBge3J9CgpgYGAKCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDbWQrT3B0aW9uK0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDbWQrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4gCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiR3JhcGhTVC1SIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKYGBge3J9CmxpYnJhcnkoU3BhdGlhbEV4cGVyaW1lbnQpI2xpYnJhcnkoTWF0cml4KSAKbGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXMKbGlicmFyeSh0b3JjaCkjc2ltaWxhciB0byBQeVRvcmNoIGluIFB5dGhvbgpsaWJyYXJ5KHBiYXBwbHkpI1IgRXF1aXZhbGVudCBvZiBQeXRob24ncyB0cWRtCmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zCmxpYnJhcnkoUjYpICNMb2FkIHRoZSBSNiBsaWJyYXJ5CmxpYnJhcnkoRGljdCkKbGlicmFyeSh0cmFuc3BvcnQpCmxpYnJhcnkob3RpbmZlcmVuY2UpCmxpYnJhcnkoU2V1cmF0KSMgTG9hZCBkYXRhIGFuZCBjcmVhdGUgYSBTZXVyYXQgb2JqZWN0LCBhbmFsb2dvdXMgdG8gdXNpbmcgc2NhbnB5CmxpYnJhcnkoRk5OKSAKbGlicmFyeShyZXRpY3VsYXRlKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KGlncmFwaCkKbGlicmFyeShsZWlkZW4pCmxpYnJhcnkobGVpZGVuQWxnKQpsaWJyYXJ5KG1jbHVzdCkKYGBgCkluIHRoaXMgcHJvamVjdCwgd2UgZGVtb25zdHJhdGUgaG93IHRvIGFwcGx5IEdyYXBoU1QgZm9yIGlkZW50aWZ5aW5nIHNwYXRpYWwgZG9tYWlucyBvbiAxMFggVmlzaXVtIGRhdGEuIEZvciB0aGlzIHB1cnBvc2UsIHdlIGFuYWx5emUgdGhlIHNhbXBsZSAxNTE2NzMgZnJvbSB0aGUgZG9yc29sYXRlcmFsIHByZWZyb250YWwgY29ydGV4IChETFBGQykgZGF0YXNldC4gTWF5bmFyZCBldCBhbC4gaGF2ZSBtYW51YWxseSBhbm5vdGF0ZWQgdGhlIERMUEZDIGxheWVycyBhbmQgd2hpdGUgbWF0dGVyLCB1dGlsaXppbmcgbW9ycGhvbG9naWNhbCBmZWF0dXJlcyBhbmQgZ2VuZSBtYXJrZXJzLgojI0xvYWQgeW91ciBkYXRhIGluCmBgYHtyfQpkYXRhX2RpciA8LSAiZGF0YS9HcmFwaERhdGEiCnNwZSA8LSBTcGF0aWFsRXhwZXJpbWVudDo6cmVhZDEweFZpc2l1bShzYW1wbGVzID0gZGF0YV9kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZSA9ICJIREY1IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gImZpbHRlcmVkIikKYGBgCgpgYGB7cn0Kbl9jbHVzdGVycyA8LSA3CmdyYXBoU1RfbW9kZWwgPC0gR3JhcGhTVCRuZXcoYWRhdGE9c3BlKQpgYGAKCmBgYHtyfQojIHRyYWluIG1vZGVsCmFkYXRhID0gZ3JhcGhTVF9tb2RlbC50cmFpbigpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkNtZCtPcHRpb24rSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkNtZCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLiAKClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KCg==</div>
 
 
 
