@@ -1754,7 +1754,7 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShTcGF0aWFsRXhwZXJpbWVudCkjbGlicmFyeShNYXRyaXgpIFxubGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXNcbmxpYnJhcnkodG9yY2gpI3NpbWlsYXIgdG8gUHlUb3JjaCBpbiBQeXRob25cbmxpYnJhcnkocGJhcHBseSkjUiBFcXVpdmFsZW50IG9mIFB5dGhvbidzIHRxZG1cbmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zXG5saWJyYXJ5KFI2KSAjTG9hZCB0aGUgUjYgbGlicmFyeVxubGlicmFyeShEaWN0KVxubGlicmFyeSh0cmFuc3BvcnQpXG5saWJyYXJ5KG90aW5mZXJlbmNlKVxubGlicmFyeShTZXVyYXQpIyBMb2FkIGRhdGEgYW5kIGNyZWF0ZSBhIFNldXJhdCBvYmplY3QsIGFuYWxvZ291cyB0byB1c2luZyBzY2FucHlcbmxpYnJhcnkoRk5OKSBcbmxpYnJhcnkocmV0aWN1bGF0ZSlcbmxpYnJhcnkoc3RhdHMpXG5saWJyYXJ5KHN0YXRzKVxubGlicmFyeShpZ3JhcGgpXG5saWJyYXJ5KGxlaWRlbilcbmxpYnJhcnkobGVpZGVuQWxnKVxubGlicmFyeShtY2x1c3QpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShTcGF0aWFsRXhwZXJpbWVudCkjbGlicmFyeShNYXRyaXgpIFxubGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXNcbmxpYnJhcnkodG9yY2gpI3NpbWlsYXIgdG8gUHlUb3JjaCBpbiBQeXRob25cbmxpYnJhcnkocGJhcHBseSkjUiBFcXVpdmFsZW50IG9mIFB5dGhvbidzIHRxZG1cbmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zXG5saWJyYXJ5KFI2KSAjTG9hZCB0aGUgUjYgbGlicmFyeVxubGlicmFyeShEaWN0KVxubGlicmFyeSh0cmFuc3BvcnQpXG5saWJyYXJ5KG90aW5mZXJlbmNlKVxubGlicmFyeShTZXVyYXQpIyBMb2FkIGRhdGEgYW5kIGNyZWF0ZSBhIFNldXJhdCBvYmplY3QsIGFuYWxvZ291cyB0byB1c2luZyBzY2FucHlcbmxpYnJhcnkoRk5OKSBcbmxpYnJhcnkocmV0aWN1bGF0ZSlcbmxpYnJhcnkoc3RhdHMpXG5saWJyYXJ5KHN0YXRzKVxubGlicmFyeShpZ3JhcGgpXG5saWJyYXJ5KGxlaWRlbilcbmxpYnJhcnkobGVpZGVuQWxnKVxubGlicmFyeShtY2x1c3QpXG5saWJyYXJ5KERFU2VxMilcbmBgYCJ9 -->
 <pre class="r"><code>library(SpatialExperiment)#library(Matrix) 
 library(dplyr)#similar to pandas
 library(torch)#similar to PyTorch in Python
@@ -1772,16 +1772,9 @@ library(stats)
 library(igraph)
 library(leiden)
 library(leidenAlg)
-library(mclust)</code></pre>
+library(mclust)
+library(DESeq2)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICAgIF9fICAgICAgICAgICBfXyBcbiAgIF9fX18gX19fICBfX19fXy8gL18gIF9fX19fX18vIC9fXG4gIC8gX18gYF9fIFxcLyBfX18vIC8gLyAvIC8gX19fLyBfXy9cbiAvIC8gLyAvIC8gLyAvX18vIC8gL18vIChfXyAgKSAvXyAgXG4vXy8gL18vIC9fL1xcX19fL18vXFxfXyxfL19fX18vXFxfXy8gICB2ZXJzaW9uIDYuMVxuVHlwZSAnY2l0YXRpb24oXCJtY2x1c3RcIiknIGZvciBjaXRpbmcgdGhpcyBSIHBhY2thZ2UgaW4gcHVibGljYXRpb25zLlxuIn0= -->
-<pre><code>                   __           __ 
-   ____ ___  _____/ /_  _______/ /_
-  / __ `__ \/ ___/ / / / / ___/ __/
- / / / / / / /__/ / /_/ (__  ) /_  
-/_/ /_/ /_/\___/_/\__,_/____/\__/   version 6.1
-Type &#39;citation(&quot;mclust&quot;)&#39; for citing this R package in publications.</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>In this project, we demonstrate how to apply GraphST for identifying
@@ -1802,22 +1795,200 @@ spe &lt;- SpatialExperiment::read10xVisium(samples = data_dir,
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl9jbHVzdGVycyA8LSA3XG5ncmFwaFNUX21vZGVsIDwtIEdyYXBoU1QkbmV3KGFkYXRhPXNwZSlcbmBgYCJ9 -->
-<pre class="r"><code>n_clusters &lt;- 7
-graphST_model &lt;- GraphST$new(adata=spe)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUHJlcHJvY2Vzcy5SXCIpXG5zb3VyY2UoXCJ1dGlscy5SXCIpXG5zb3VyY2UoXCJtb2RlbC5SXCIpXG5zb3VyY2UoXCJab3JGaXJzdFJwcm9qZWN0LlJcIilcbmBgYCJ9 -->
+<pre class="r"><code>source(&quot;Preprocess.R&quot;)
+source(&quot;utils.R&quot;)
+source(&quot;model.R&quot;)
+source(&quot;ZorFirstRproject.R&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyB0cmFpbiBtb2RlbFxuYWRhdGEgPSBncmFwaFNUX21vZGVsLnRyYWluKClcbmBgYCJ9 -->
-<pre class="r"><code># train model
-adata = graphST_model.train()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl9jbHVzdGVycyA8LSA3XG5ncmFwaFNUX21vZGVsIDwtIEdyYXBoU1QkbmV3KGFkYXRhPXNwZSlcbmBgYCJ9 -->
+<pre class="r"><code>n_clusters &lt;- 7
+graphST_model &lt;- GraphST$new(adata=spe)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZ3JhcGhTVF9tb2RlbC50cmFpbigpIDogXG4gIGNvdWxkIG5vdCBmaW5kIGZ1bmN0aW9uIFwiZ3JhcGhTVF9tb2RlbC50cmFpblwiXG4ifQ== -->
-<pre><code>Error in graphST_model.train() : 
-  could not find function &quot;graphST_model.train&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6ICdWU1QuZGVmYXVsdCcgaXMgbm90IGltcGxlbWVudGVkIHlldFxuIn0= -->
+<pre><code>Error: &#39;VST.default&#39; is not implemented yet</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlXG5gYGAifQ== -->
+<pre class="r"><code>spe</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgcmFkaXVzIHRvIHNwZWNpZnkgdGhlIG51bWJlciBvZiBuZWlnaGJvcnMgY29uc2lkZXJlZCBkdXJpbmcgcmVmaW5lbWVudFxucmFkaXVzIDwtIDUwXG50b29sIDwtICdtY2x1c3QnICMgbWNsdXN0LCBsZWlkZW4sIGFuZCBsb3V2YWluXG5gYGAifQ== -->
+<pre class="r"><code># set radius to specify the number of neighbors considered during refinement
+radius &lt;- 50
+tool &lt;- &#39;mclust&#39; # mclust, leiden, and louvain</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Spatial clusting and refinment</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKHRvb2wgPT0gJ21jbHVzdCcpIHtcbiAgIyBGb3IgRExQRkMgZGF0YXNldCwgd2UgdXNlIG9wdGlvbmFsIHJlZmluZW1lbnQgc3RlcC5cbiAgY2x1c3RlcmluZyhzcGUsIG5fY2x1c3RlcnMsIHJhZGl1cyA9IHJhZGl1cywgbWV0aG9kID0gdG9vbCwgcmVmaW5lbWVudCA9IFRSVUUpXG59IGVsc2UgaWYgKHRvb2wgJWluJSBjKCdsZWlkZW4nLCAnbG91dmFpbicpKSB7XG4gIGNsdXN0ZXJpbmcoc3BlLCBuX2NsdXN0ZXJzLCByYWRpdXMgPSByYWRpdXMsIG1ldGhvZCA9IHRvb2wsIHN0YXJ0ID0gMC4xLCBlbmQgPSAyLjAsIGluY3JlbWVudCA9IDAuMDEsIHJlZmluZW1lbnQgPSBGQUxTRSlcbn1cblxuYGBgIn0= -->
+<pre class="r"><code>if (tool == &#39;mclust&#39;) {
+  # For DLPFC dataset, we use optional refinement step.
+  clustering(spe, n_clusters, radius = radius, method = tool, refinement = TRUE)
+} else if (tool %in% c(&#39;leiden&#39;, &#39;louvain&#39;)) {
+  clustering(spe, n_clusters, radius = radius, method = tool, start = 0.1, end = 2.0, increment = 0.01, refinement = FALSE)
+}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Visualize the results</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##scRNA and ST data integration (deconvolution)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YXNldCA8LSAnSHVtYW5fTHltcGhfTm9kZSdcblxuYGBgIn0= -->
+<pre class="r"><code>dataset &lt;- &#39;Human_Lymph_Node&#39;
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Reading ST data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByZWFkIFNUIGRhdGFcblN5cy5zZXRlbnYoUkVUSUNVTEFURV9QWVRIT04gPSBcIi9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlXCIpXG5saWJyYXJ5KHJldGljdWxhdGUpXG4jL3Vzci9sb2NhbC9iaW4vcHl0aG9uM1xudXNlX2NvbmRhZW52KFwiL1VzZXJzL3pvcmFuYXljb3Vyc2V5L29wdC9hbmFjb25kYTMvZW52cy9yLXJldGljdWxhdGVcIiwgcmVxdWlyZWQgPSBUUlVFKVxuYGBgIn0= -->
+<pre class="r"><code># read ST data
+Sys.setenv(RETICULATE_PYTHON = &quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate&quot;)
+library(reticulate)
+#/usr/local/bin/python3
+use_condaenv(&quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate&quot;, required = TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogVGhlIHJlcXVlc3QgdG8gYHVzZV9weXRob24oXCIvVXNlcnMvem9yYW5heWNvdXJzZXkvb3B0L2FuYWNvbmRhMy9lbnZzL3ItcmV0aWN1bGF0ZS9iaW4vcHl0aG9uXCIpYCB3aWxsIGJlIGlnbm9yZWQgYmVjYXVzZSB0aGUgZW52aXJvbm1lbnQgdmFyaWFibGUgUkVUSUNVTEFURV9QWVRIT04gaXMgc2V0IHRvIFwiL1VzZXJzL3pvcmFuYXljb3Vyc2V5L29wdC9hbmFjb25kYTMvZW52cy9yLXJldGljdWxhdGVcIlxuIn0= -->
+<pre><code>Warning: The request to `use_python(&quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/bin/python&quot;)` will be ignored because the environment variable RETICULATE_PYTHON is set to &quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3B5X2luc3RhbGwoXCJzY2FucHlcIiwgZW52bmFtZSA9IHJldGljdWxhdGU6OnB5X2NvbmZpZygpJGVudm5hbWUpIFxuI3VzZV9weXRob24oXCIvb3B0L2hvbWVicmV3L2Jpbi9weXRob24zXCIsIHJlcXVpcmVkID0gTlVMTClcbiMoXCIvVXNlcnMvem9yYW5heWNvdXJzZXkvb3B0L2FuYWNvbmRhMy9lbnZzL3ItcmV0aWN1bGF0ZS9iaW4vcHl0aG9uM1wiLCByZXF1aXJlZCA9IE5VTEwpXG4jdXNlX3B5dGhvbihcIi9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlXCIsIHJlcXVpcmVkID0gTlVMTClcbnNjIDwtIGltcG9ydChcInNjYW5weVwiKVxuYGBgIn0= -->
+<pre class="r"><code>#py_install(&quot;scanpy&quot;, envname = reticulate::py_config()$envname) 
+#use_python(&quot;/opt/homebrew/bin/python3&quot;, required = NULL)
+#(&quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/bin/python3&quot;, required = NULL)
+#use_python(&quot;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate&quot;, required = NULL)
+sc &lt;- import(&quot;scanpy&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gcHl0aG9uX2NvbmZpZ19pbXBsKHB5dGhvbikgOiBcbiAgRXJyb3IgcnVubmluZyAnL1VzZXJzL3pvcmFuYXljb3Vyc2V5L29wdC9hbmFjb25kYTMvZW52cy9yLXJldGljdWxhdGUvcHl0aG9uJzogTm8gc3VjaCBmaWxlLlxuRXJyb3I6IC9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2xpYi9saWJweXRob24zLjEyLmR5bGliIC0gZGxvcGVuKC9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2xpYi9saWJweXRob24zLjEyLmR5bGliLCAweDAwMEEpOiB0cmllZDogJy9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2xpYi9saWJweXRob24zLjEyLmR5bGliJyAobWFjaC1vIGZpbGUsIGJ1dCBpcyBhbiBpbmNvbXBhdGlibGUgYXJjaGl0ZWN0dXJlIChoYXZlICd4ODZfNjQnLCBuZWVkICdhcm02NCcpKSwgJy9TeXN0ZW0vVm9sdW1lcy9QcmVib290L0NyeXB0ZXhlcy9PUy9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2xpYi9saWJweXRob24zLjEyLmR5bGliJyAobm8gc3VjaCBmaWxlKSwgJy9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2xpYi9saWJweXRob24zLjEyLmR5bGliJyAobWFjaC1vIGZpbGUsIGJ1dCBpcyBhbiBpbmNvbXBhdGlibGUgYXJjaGl0ZWN0dXJlIChoYXZlICd4ODZfNjQnLCBuZWVkICdhcm02NCcpKVxuIn0= -->
+<pre><code>Error in python_config_impl(python) : 
+  Error running &#39;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/python&#39;: No such file.
+Error: /Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/lib/libpython3.12.dylib - dlopen(/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/lib/libpython3.12.dylib, 0x000A): tried: &#39;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/lib/libpython3.12.dylib&#39; (mach-o file, but is an incompatible architecture (have &#39;x86_64&#39;, need &#39;arm64&#39;)), &#39;/System/Volumes/Preboot/Cryptexes/OS/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/lib/libpython3.12.dylib&#39; (no such file), &#39;/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/lib/libpython3.12.dylib&#39; (mach-o file, but is an incompatible architecture (have &#39;x86_64&#39;, need &#39;arm64&#39;))</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTb3VyY2UgdGhlIHNjcmlwdCB0byBsb2FkIHRoZSBmdW5jdGlvbnNcbnNvdXJjZShcIlByZXByb2Nlc3MuUlwiKVxuYGBgIn0= -->
+<pre class="r"><code># Source the script to load the functions
+source(&quot;Preprocess.R&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Pre-processing for ST data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDaGVjayBpZiBmdW5jdGlvbnMgYXJlIGxvYWRlZFxuaWYgKCFleGlzdHMoXCJwcmVwcm9jZXNzXCIpIHx8ICFleGlzdHMoXCJjb25zdHJ1Y3RfaW50ZXJhY3Rpb25cIikgfHwgIWV4aXN0cyhcImFkZF9jb250cmFzdGl2ZV9sYWJlbFwiKSkge1xuICAgIHN0b3AoXCJPbmUgb3IgbW9yZSByZXF1aXJlZCBmdW5jdGlvbnMgYXJlIG5vdCBhdmFpbGFibGUuIENoZWNrIHlvdXIgc291cmNlIGZpbGUuXCIpXG59XG5cbmFkYXRhIDwtIHByZXByb2Nlc3MoYWRhdGEpICAjIFByZXByb2Nlc3MgZGF0YVxuYWRhdGEgPC0gY29uc3RydWN0X2ludGVyYWN0aW9uKGFkYXRhKSAgIyBCdWlsZCBncmFwaFxuYWRhdGEgPC0gYWRkX2NvbnRyYXN0aXZlX2xhYmVsKGFkYXRhKSAgIyBBZGQgbGFiZWxzXG5gYGAifQ== -->
+<pre class="r"><code># Check if functions are loaded
+if (!exists(&quot;preprocess&quot;) || !exists(&quot;construct_interaction&quot;) || !exists(&quot;add_contrastive_label&quot;)) {
+    stop(&quot;One or more required functions are not available. Check your source file.&quot;)
+}
+
+adata &lt;- preprocess(adata)  # Preprocess data
+adata &lt;- construct_interaction(adata)  # Build graph
+adata &lt;- add_contrastive_label(adata)  # Add labels</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Reading reference data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXNlX3B5dGhvbihcIi9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzXCIpXG5zYyA8LSBpbXBvcnQoXCJzY2FucHlcIilcbmZpbGVfZm9sZCA8LSBcImRhdGEvR3JhcGhEYXRhL0h1bWFuX0x5bXBoX05vZGVcIlxuZmlsZV9wYXRoIDwtIHJlYWRfc3RfZGF0YShmaWxlX2ZvbGQsICdzY1JOQS5oNWFkJylcbmFkYXRhX3NjIDwtIHNjLnJlYWQoZmlsZV9wYXRoKVxuI2FkYXRhX3NjLnZhcl9uYW1lc19tYWtlX3VuaXF1ZSgpXG5cbmBgYCJ9 -->
+<pre class="r"><code>use_python(&quot;/Users/zoranaycoursey/opt/anaconda3&quot;)
+sc &lt;- import(&quot;scanpy&quot;)
+file_fold &lt;- &quot;data/GraphData/Human_Lymph_Node&quot;
+file_path &lt;- read_st_data(file_fold, &#39;scRNA.h5ad&#39;)
+adata_sc &lt;- sc.read(file_path)
+#adata_sc.var_names_make_unique()
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Pre-processing for reference data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCFleGlzdHMoXCJwcmVwcm9jZXNzXCIpKSB7XG4gICAgc3RvcChcIk9uZSBvciBtb3JlIHJlcXVpcmVkIGZ1bmN0aW9ucyBhcmUgbm90IGF2YWlsYWJsZS4gQ2hlY2sgeW91ciBzb3VyY2UgZmlsZS5cIilcbn1cbmFkYXRhX3NjIDwtIHByZXByb2Nlc3MoYWRhdGFfc2MpICAjIFByZXByb2Nlc3MgZGF0YVxuYGBgIn0= -->
+<pre class="r"><code>if (!exists(&quot;preprocess&quot;)) {
+    stop(&quot;One or more required functions are not available. Check your source file.&quot;)
+}
+adata_sc &lt;- preprocess(adata_sc)  # Preprocess data</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Finding overlap genes between ST and reference data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaW5kIG92ZXJsYXBwaW5nIGdlbmVzXG5yZXN1bHRzIDwtIGZpbHRlcl93aXRoX292ZXJsYXBfZ2VuZShhZGF0YSwgYWRhdGFfc2MpXG5hZGF0YSA8LSByZXN1bHRzW1sxXV0gICMgVXBkYXRlZCBhZGF0YVxuYWRhdGFfc2MgPC0gcmVzdWx0c1tbMl1dICAjIFVwZGF0ZWQgYWRhdGFfc2NcbmBgYCJ9 -->
+<pre class="r"><code># Find overlapping genes
+results &lt;- filter_with_overlap_gene(adata, adata_sc)
+adata &lt;- results[[1]]  # Updated adata
+adata_sc &lt;- results[[2]]  # Updated adata_sc</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Extracting features for ST data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRhdGEgPC1nZXRfZmVhdHVyZShhZGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>adata &lt;-get_feature(adata)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Implementing GraphST for cell type deconvolution</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0b3JjaClcbiMgU2V0IGRldmljZSBiYXNlZCBvbiBDVURBIGF2YWlsYWJpbGl0eVxuZGV2aWNlIDwtIGlmIChjdWRhX2lzX2F2YWlsYWJsZSgpKSB7XG4gICAgdG9yY2hfZGV2aWNlKFwiY3VkYToxXCIpICAjIFVzZSB0aGUgc2Vjb25kIEdQVVxufSBlbHNlIHtcbiAgICB0b3JjaF9kZXZpY2UoXCJjcHVcIilcbn1cbmBgYCJ9 -->
+<pre class="r"><code>library(torch)
+# Set device based on CUDA availability
+device &lt;- if (cuda_is_available()) {
+    torch_device(&quot;cuda:1&quot;)  # Use the second GPU
+} else {
+    torch_device(&quot;cpu&quot;)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiWm9yRmlyc3RScHJvamVjdC5SXCIpXG4jIEluaXRpYWxpemUgdGhlIG1vZGVsXG5tb2RlbCA8LSBHcmFwaFNUJG5ldyhhZGF0YT1hZGF0YSwgYWRhdGFfc2M9YWRhdGFfc2MsIGVwb2Nocz0xMjAwLCByYW5kb21fc2VlZD01MCwgZGV2aWNlPWRldmljZSwgZGVjb252b2x1dGlvbj1UUlVFKVxuYGBgIn0= -->
+<pre class="r"><code>source(&quot;ZorFirstRproject.R&quot;)
+# Initialize the model
+model &lt;- GraphST$new(adata=adata, adata_sc=adata_sc, epochs=1200, random_seed=50, device=device, deconvolution=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IG9iamVjdCAnYWRhdGEnIG5vdCBmb3VuZFxuIn0= -->
+<pre><code>Error: object &#39;adata&#39; not found</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUcmFpbiB0aGUgbW9kZWwgYW5kIGdldCB0aGUgdXBkYXRlZCBhZGF0YSBhbmQgYWRhdGFfc2NcbnJlc3VsdHMgPC0gbW9kZWwkdHJhaW5fbWFwKClcbmFkYXRhIDwtIHJlc3VsdHNbWzFdXVxuYWRhdGFfc2MgPC0gcmVzdWx0c1tbMl1dXG5gYGAifQ== -->
+<pre class="r"><code># Train the model and get the updated adata and adata_sc
+results &lt;- model$train_map()
+adata &lt;- results[[1]]
+adata_sc &lt;- results[[2]]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>##Visualization of single cell data distribution in ST tissue</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
@@ -1831,7 +2002,7 @@ run any R code chunks. Instead, the output of the chunk when it was last
 run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiR3JhcGhTVC1SIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKYGBge3J9CmxpYnJhcnkoU3BhdGlhbEV4cGVyaW1lbnQpI2xpYnJhcnkoTWF0cml4KSAKbGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXMKbGlicmFyeSh0b3JjaCkjc2ltaWxhciB0byBQeVRvcmNoIGluIFB5dGhvbgpsaWJyYXJ5KHBiYXBwbHkpI1IgRXF1aXZhbGVudCBvZiBQeXRob24ncyB0cWRtCmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zCmxpYnJhcnkoUjYpICNMb2FkIHRoZSBSNiBsaWJyYXJ5CmxpYnJhcnkoRGljdCkKbGlicmFyeSh0cmFuc3BvcnQpCmxpYnJhcnkob3RpbmZlcmVuY2UpCmxpYnJhcnkoU2V1cmF0KSMgTG9hZCBkYXRhIGFuZCBjcmVhdGUgYSBTZXVyYXQgb2JqZWN0LCBhbmFsb2dvdXMgdG8gdXNpbmcgc2NhbnB5CmxpYnJhcnkoRk5OKSAKbGlicmFyeShyZXRpY3VsYXRlKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KGlncmFwaCkKbGlicmFyeShsZWlkZW4pCmxpYnJhcnkobGVpZGVuQWxnKQpsaWJyYXJ5KG1jbHVzdCkKYGBgCkluIHRoaXMgcHJvamVjdCwgd2UgZGVtb25zdHJhdGUgaG93IHRvIGFwcGx5IEdyYXBoU1QgZm9yIGlkZW50aWZ5aW5nIHNwYXRpYWwgZG9tYWlucyBvbiAxMFggVmlzaXVtIGRhdGEuIEZvciB0aGlzIHB1cnBvc2UsIHdlIGFuYWx5emUgdGhlIHNhbXBsZSAxNTE2NzMgZnJvbSB0aGUgZG9yc29sYXRlcmFsIHByZWZyb250YWwgY29ydGV4IChETFBGQykgZGF0YXNldC4gTWF5bmFyZCBldCBhbC4gaGF2ZSBtYW51YWxseSBhbm5vdGF0ZWQgdGhlIERMUEZDIGxheWVycyBhbmQgd2hpdGUgbWF0dGVyLCB1dGlsaXppbmcgbW9ycGhvbG9naWNhbCBmZWF0dXJlcyBhbmQgZ2VuZSBtYXJrZXJzLgojI0xvYWQgeW91ciBkYXRhIGluCmBgYHtyfQpkYXRhX2RpciA8LSAiZGF0YS9HcmFwaERhdGEiCnNwZSA8LSBTcGF0aWFsRXhwZXJpbWVudDo6cmVhZDEweFZpc2l1bShzYW1wbGVzID0gZGF0YV9kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZSA9ICJIREY1IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gImZpbHRlcmVkIikKYGBgCgpgYGB7cn0Kbl9jbHVzdGVycyA8LSA3CmdyYXBoU1RfbW9kZWwgPC0gR3JhcGhTVCRuZXcoYWRhdGE9c3BlKQpgYGAKCmBgYHtyfQojIHRyYWluIG1vZGVsCmFkYXRhID0gZ3JhcGhTVF9tb2RlbC50cmFpbigpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkNtZCtPcHRpb24rSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkNtZCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLiAKClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiR3JhcGhTVC1SIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKYGBge3J9CmxpYnJhcnkoU3BhdGlhbEV4cGVyaW1lbnQpI2xpYnJhcnkoTWF0cml4KSAKbGlicmFyeShkcGx5cikjc2ltaWxhciB0byBwYW5kYXMKbGlicmFyeSh0b3JjaCkjc2ltaWxhciB0byBQeVRvcmNoIGluIFB5dGhvbgpsaWJyYXJ5KHBiYXBwbHkpI1IgRXF1aXZhbGVudCBvZiBQeXRob24ncyB0cWRtCmxpYnJhcnkoTWF0cml4KSNGb3Igc3BhcnNlIG1hdHJpeCBvcGVyYXRpb25zCmxpYnJhcnkoUjYpICNMb2FkIHRoZSBSNiBsaWJyYXJ5CmxpYnJhcnkoRGljdCkKbGlicmFyeSh0cmFuc3BvcnQpCmxpYnJhcnkob3RpbmZlcmVuY2UpCmxpYnJhcnkoU2V1cmF0KSMgTG9hZCBkYXRhIGFuZCBjcmVhdGUgYSBTZXVyYXQgb2JqZWN0LCBhbmFsb2dvdXMgdG8gdXNpbmcgc2NhbnB5CmxpYnJhcnkoRk5OKSAKbGlicmFyeShyZXRpY3VsYXRlKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KHN0YXRzKQpsaWJyYXJ5KGlncmFwaCkKbGlicmFyeShsZWlkZW4pCmxpYnJhcnkobGVpZGVuQWxnKQpsaWJyYXJ5KG1jbHVzdCkKbGlicmFyeShERVNlcTIpCmBgYApJbiB0aGlzIHByb2plY3QsIHdlIGRlbW9uc3RyYXRlIGhvdyB0byBhcHBseSBHcmFwaFNUIGZvciBpZGVudGlmeWluZyBzcGF0aWFsIGRvbWFpbnMgb24gMTBYIFZpc2l1bSBkYXRhLiBGb3IgdGhpcyBwdXJwb3NlLCB3ZSBhbmFseXplIHRoZSBzYW1wbGUgMTUxNjczIGZyb20gdGhlIGRvcnNvbGF0ZXJhbCBwcmVmcm9udGFsIGNvcnRleCAoRExQRkMpIGRhdGFzZXQuIE1heW5hcmQgZXQgYWwuIGhhdmUgbWFudWFsbHkgYW5ub3RhdGVkIHRoZSBETFBGQyBsYXllcnMgYW5kIHdoaXRlIG1hdHRlciwgdXRpbGl6aW5nIG1vcnBob2xvZ2ljYWwgZmVhdHVyZXMgYW5kIGdlbmUgbWFya2Vycy4KIyNMb2FkIHlvdXIgZGF0YSBpbgpgYGB7cn0KZGF0YV9kaXIgPC0gImRhdGEvR3JhcGhEYXRhIgpzcGUgPC0gU3BhdGlhbEV4cGVyaW1lbnQ6OnJlYWQxMHhWaXNpdW0oc2FtcGxlcyA9IGRhdGFfZGlyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHR5cGUgPSAiSERGNSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9ICJmaWx0ZXJlZCIpCmBgYAoKYGBge3J9CnNvdXJjZSgiUHJlcHJvY2Vzcy5SIikKc291cmNlKCJ1dGlscy5SIikKc291cmNlKCJtb2RlbC5SIikKc291cmNlKCJab3JGaXJzdFJwcm9qZWN0LlIiKQpgYGAKCmBgYHtyfQpuX2NsdXN0ZXJzIDwtIDcKZ3JhcGhTVF9tb2RlbCA8LSBHcmFwaFNUJG5ldyhhZGF0YT1zcGUpCmBgYAoKYGBge3J9CnNwZQpgYGAKYGBge3J9CiMgc2V0IHJhZGl1cyB0byBzcGVjaWZ5IHRoZSBudW1iZXIgb2YgbmVpZ2hib3JzIGNvbnNpZGVyZWQgZHVyaW5nIHJlZmluZW1lbnQKcmFkaXVzIDwtIDUwCnRvb2wgPC0gJ21jbHVzdCcgIyBtY2x1c3QsIGxlaWRlbiwgYW5kIGxvdXZhaW4KYGBgCiMjU3BhdGlhbCBjbHVzdGluZyBhbmQgcmVmaW5tZW50CgpgYGB7cn0KaWYgKHRvb2wgPT0gJ21jbHVzdCcpIHsKICAjIEZvciBETFBGQyBkYXRhc2V0LCB3ZSB1c2Ugb3B0aW9uYWwgcmVmaW5lbWVudCBzdGVwLgogIGNsdXN0ZXJpbmcoc3BlLCBuX2NsdXN0ZXJzLCByYWRpdXMgPSByYWRpdXMsIG1ldGhvZCA9IHRvb2wsIHJlZmluZW1lbnQgPSBUUlVFKQp9IGVsc2UgaWYgKHRvb2wgJWluJSBjKCdsZWlkZW4nLCAnbG91dmFpbicpKSB7CiAgY2x1c3RlcmluZyhzcGUsIG5fY2x1c3RlcnMsIHJhZGl1cyA9IHJhZGl1cywgbWV0aG9kID0gdG9vbCwgc3RhcnQgPSAwLjEsIGVuZCA9IDIuMCwgaW5jcmVtZW50ID0gMC4wMSwgcmVmaW5lbWVudCA9IEZBTFNFKQp9CgpgYGAKIyNWaXN1YWxpemUgdGhlIHJlc3VsdHMKYGBge3J9CgpgYGAKCiMjc2NSTkEgYW5kIFNUIGRhdGEgaW50ZWdyYXRpb24gKGRlY29udm9sdXRpb24pCmBgYHtyfQpkYXRhc2V0IDwtICdIdW1hbl9MeW1waF9Ob2RlJwoKYGBgCiMjUmVhZGluZyBTVCBkYXRhIApgYGB7cn0KIyByZWFkIFNUIGRhdGEKU3lzLnNldGVudihSRVRJQ1VMQVRFX1BZVEhPTiA9ICIvVXNlcnMvem9yYW5heWNvdXJzZXkvb3B0L2FuYWNvbmRhMy9lbnZzL3ItcmV0aWN1bGF0ZSIpCmxpYnJhcnkocmV0aWN1bGF0ZSkKIy91c3IvbG9jYWwvYmluL3B5dGhvbjMKdXNlX2NvbmRhZW52KCIvVXNlcnMvem9yYW5heWNvdXJzZXkvb3B0L2FuYWNvbmRhMy9lbnZzL3ItcmV0aWN1bGF0ZSIsIHJlcXVpcmVkID0gVFJVRSkKI3B5X2luc3RhbGwoInNjYW5weSIsIGVudm5hbWUgPSByZXRpY3VsYXRlOjpweV9jb25maWcoKSRlbnZuYW1lKSAKI3VzZV9weXRob24oIi9vcHQvaG9tZWJyZXcvYmluL3B5dGhvbjMiLCByZXF1aXJlZCA9IE5VTEwpCiMoIi9Vc2Vycy96b3JhbmF5Y291cnNleS9vcHQvYW5hY29uZGEzL2VudnMvci1yZXRpY3VsYXRlL2Jpbi9weXRob24zIiwgcmVxdWlyZWQgPSBOVUxMKQojdXNlX3B5dGhvbigiL1VzZXJzL3pvcmFuYXljb3Vyc2V5L29wdC9hbmFjb25kYTMvZW52cy9yLXJldGljdWxhdGUiLCByZXF1aXJlZCA9IE5VTEwpCnNjIDwtIGltcG9ydCgic2NhbnB5IikKZmlsZV9mb2xkIDwtICJkYXRhL0dyYXBoRGF0YSIKZmlsZV9wYXRoIDwtIHJlYWRfc3RfZGF0YShmaWxlX2ZvbGQsICdTVC5oNWFkJykKIyBSZWFkIHRoZSAuaDVhZCBmaWxlCmFkYXRhIDwtIHNjJHJlYWRfaDVhZChmaWxlX3BhdGgpCiNhZGF0YV9zYy52YXJfbmFtZXNfbWFrZV91bmlxdWUoKQojQUxUIGVudmlyb25tZW50IGxvY2F0aW9uOiAvVXNlcnMvem9yYW5heWNvdXJzZXkvb3B0L2FuYWNvbmRhMwpgYGAKCgpgYGB7cn0KIyBTb3VyY2UgdGhlIHNjcmlwdCB0byBsb2FkIHRoZSBmdW5jdGlvbnMKc291cmNlKCJQcmVwcm9jZXNzLlIiKQpgYGAKCiMjUHJlLXByb2Nlc3NpbmcgZm9yIFNUIGRhdGEKYGBge3J9CiMgQ2hlY2sgaWYgZnVuY3Rpb25zIGFyZSBsb2FkZWQKaWYgKCFleGlzdHMoInByZXByb2Nlc3MiKSB8fCAhZXhpc3RzKCJjb25zdHJ1Y3RfaW50ZXJhY3Rpb24iKSB8fCAhZXhpc3RzKCJhZGRfY29udHJhc3RpdmVfbGFiZWwiKSkgewogICAgc3RvcCgiT25lIG9yIG1vcmUgcmVxdWlyZWQgZnVuY3Rpb25zIGFyZSBub3QgYXZhaWxhYmxlLiBDaGVjayB5b3VyIHNvdXJjZSBmaWxlLiIpCn0KCmFkYXRhIDwtIHByZXByb2Nlc3MoYWRhdGEpICAjIFByZXByb2Nlc3MgZGF0YQphZGF0YSA8LSBjb25zdHJ1Y3RfaW50ZXJhY3Rpb24oYWRhdGEpICAjIEJ1aWxkIGdyYXBoCmFkYXRhIDwtIGFkZF9jb250cmFzdGl2ZV9sYWJlbChhZGF0YSkgICMgQWRkIGxhYmVscwpgYGAKCiMjUmVhZGluZyByZWZlcmVuY2UgZGF0YQpgYGB7cn0KdXNlX3B5dGhvbigiL1VzZXJzL3pvcmFuYXljb3Vyc2V5L29wdC9hbmFjb25kYTMiKQpzYyA8LSBpbXBvcnQoInNjYW5weSIpCmZpbGVfZm9sZCA8LSAiZGF0YS9HcmFwaERhdGEvSHVtYW5fTHltcGhfTm9kZSIKZmlsZV9wYXRoIDwtIHJlYWRfc3RfZGF0YShmaWxlX2ZvbGQsICdzY1JOQS5oNWFkJykKYWRhdGFfc2MgPC0gc2MucmVhZChmaWxlX3BhdGgpCiNhZGF0YV9zYy52YXJfbmFtZXNfbWFrZV91bmlxdWUoKQoKYGBgCgojI1ByZS1wcm9jZXNzaW5nIGZvciByZWZlcmVuY2UgZGF0YQoKYGBge3J9CmlmICghZXhpc3RzKCJwcmVwcm9jZXNzIikpIHsKICAgIHN0b3AoIk9uZSBvciBtb3JlIHJlcXVpcmVkIGZ1bmN0aW9ucyBhcmUgbm90IGF2YWlsYWJsZS4gQ2hlY2sgeW91ciBzb3VyY2UgZmlsZS4iKQp9CmFkYXRhX3NjIDwtIHByZXByb2Nlc3MoYWRhdGFfc2MpICAjIFByZXByb2Nlc3MgZGF0YQpgYGAKCiMjRmluZGluZyBvdmVybGFwIGdlbmVzIGJldHdlZW4gU1QgYW5kIHJlZmVyZW5jZSBkYXRhCmBgYHtyfQojIEZpbmQgb3ZlcmxhcHBpbmcgZ2VuZXMKcmVzdWx0cyA8LSBmaWx0ZXJfd2l0aF9vdmVybGFwX2dlbmUoYWRhdGEsIGFkYXRhX3NjKQphZGF0YSA8LSByZXN1bHRzW1sxXV0gICMgVXBkYXRlZCBhZGF0YQphZGF0YV9zYyA8LSByZXN1bHRzW1syXV0gICMgVXBkYXRlZCBhZGF0YV9zYwpgYGAKCiMjRXh0cmFjdGluZyBmZWF0dXJlcyBmb3IgU1QgZGF0YQpgYGB7cn0KYWRhdGEgPC1nZXRfZmVhdHVyZShhZGF0YSkKYGBgCgojI0ltcGxlbWVudGluZyBHcmFwaFNUIGZvciBjZWxsIHR5cGUgZGVjb252b2x1dGlvbgpgYGB7cn0KbGlicmFyeSh0b3JjaCkKIyBTZXQgZGV2aWNlIGJhc2VkIG9uIENVREEgYXZhaWxhYmlsaXR5CmRldmljZSA8LSBpZiAoY3VkYV9pc19hdmFpbGFibGUoKSkgewogICAgdG9yY2hfZGV2aWNlKCJjdWRhOjEiKSAgIyBVc2UgdGhlIHNlY29uZCBHUFUKfSBlbHNlIHsKICAgIHRvcmNoX2RldmljZSgiY3B1IikKfQpgYGAKCmBgYHtyfQpzb3VyY2UoIlpvckZpcnN0UnByb2plY3QuUiIpCiMgSW5pdGlhbGl6ZSB0aGUgbW9kZWwKbW9kZWwgPC0gR3JhcGhTVCRuZXcoYWRhdGE9YWRhdGEsIGFkYXRhX3NjPWFkYXRhX3NjLCBlcG9jaHM9MTIwMCwgcmFuZG9tX3NlZWQ9NTAsIGRldmljZT1kZXZpY2UsIGRlY29udm9sdXRpb249VFJVRSkKYGBgCgpgYGB7cn0KIyBUcmFpbiB0aGUgbW9kZWwgYW5kIGdldCB0aGUgdXBkYXRlZCBhZGF0YSBhbmQgYWRhdGFfc2MKcmVzdWx0cyA8LSBtb2RlbCR0cmFpbl9tYXAoKQphZGF0YSA8LSByZXN1bHRzW1sxXV0KYWRhdGFfc2MgPC0gcmVzdWx0c1tbMl1dCmBgYAoKIyNWaXN1YWxpemF0aW9uIG9mIHNpbmdsZSBjZWxsIGRhdGEgZGlzdHJpYnV0aW9uIGluIFNUIHRpc3N1ZQpgYGB7cn0KCmBgYAoKCgoKCgoKCgoKCgoKCgoKCgoKCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuIAoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgoK</div>
 
 
 

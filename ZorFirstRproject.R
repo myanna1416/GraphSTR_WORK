@@ -46,12 +46,12 @@ GraphST <- R6::R6Class(
       
       
       # Check for 'highly_variable' in adata$var
-      if (!"highly_variable" %in% keys(self$adata$var)) {
+      if (!"highly_variable" %in% names(self$adata$var)) {
         self$adata <- preprocess(self$adata)
       }
       
       # Check for 'adj' in adata$obsm and construct interaction matrices
-      if (!"adj" %in% keys(self$adata$obsm)) {
+      if (!"adj" %in% names(self$adata$obsm)) {
         if (self$datatype %in% c("Stereo", "Slide")) {
           self$adata <- construct_interaction_KNN(self$adata)
         } else {
@@ -60,12 +60,12 @@ GraphST <- R6::R6Class(
       }
       
       # Check for 'label_CSL' in adata$obsm and add contrastive labels
-      if (!"label_CSL" %in% keys(self$adata$obsm)) {
+      if (!"label_CSL" %in% names(self$adata$obsm)) {
         self$adata <- add_contrastive_label(self$adata)
       }
       
       # Check for 'feat' in adata$obsm and extract features
-      if (!"feat" %in% keys(self$adata$obsm)) {
+      if (!"feat" %in% names(self$adata$obsm)) {
         self$adata <- get_feature(self$adata)
       }
       
@@ -91,8 +91,7 @@ GraphST <- R6::R6Class(
       self$dim_output <- dim_output
       
       self$adj <- preprocess_adj(self$adj)
-      self$adj <-
-        torch_tensor(self$adj, dtype = torch_float32)$to(device = self$device)
+      self$adj <-torch_tensor(self$adj, dtype = torch_float32)$to(device = self$device)
       #-- you could use this alt. --
       #--self$adj <- torch_tensor(as.array(self$adj), dtype = torch_float32)$to(device = self$device)
       if (self$deconvolution) {
@@ -124,6 +123,56 @@ GraphST <- R6::R6Class(
         self$n_cell <- self$adata_sc$n_obs
         self$n_spot <- self$adata$n_obs
       }
+    },
+    
+    train = function() {
+      if (self$datatype %in% c('Stereo', 'Slide')) {
+        self$model <- Encoder_sparse$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
+      } else {
+        self$model <- Encoder$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
+      }
+      self$loss_CSL <- nn_bce_with_logits_loss()
+      self$optimizer <- optim_adam(self$model$parameters(), lr = self$learning_rate, weight_decay = self$weight_decay)
+      
+      cat("Begin to train ST data...\n")
+      pb <- progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
+      
+      for (epoch in 1:self$epochs) {
+        self$model$train()
+        
+        self$features_a <- permutation(self$features)  # Ensure this function is defined to shuffle features
+        list(hidden_feat, emb, ret, ret_a) <- self$model(self$features, self$features_a, self$adj)
+        
+        loss_sl_1 <- self$loss_CSL(ret, self$label_CSL)
+        loss_sl_2 <- self$loss_CSL(ret_a, self$label_CSL)
+        loss_feat <- mse_loss(self$features, emb)
+        
+        loss <- self$alpha * loss_feat + self$beta * (loss_sl_1 + loss_sl_2)
+        
+        self$optimizer$zero_grad()
+        loss$backward()
+        self$optimizer$step()
+        
+        pb$tick()
+      }
+      
+      cat("Optimization finished for ST data!\n")
+      
+      no_grad({
+        self$model$eval()
+        if (self$deconvolution) {
+          self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]
+          return(self$emb_rec)
+        } else {
+          if (self$datatype %in% c('Stereo', 'Slide')) {
+            self$emb_rec <- normalize(self$model(self$features, self$features_a, self$adj)[[2]], p = 2, dim = 2)$detach()$cpu()$numpy()
+          } else {
+            self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
+          }
+          self$adata$obsm[['emb']] <- self$emb_rec
+          return(self$adata)
+        }
+      })
     }
   )
 )
@@ -133,56 +182,8 @@ GraphST <- R6::R6Class(
 
 #graph_st_instance <- GraphST$new(adata = my_adata, adata_sc = my_adata_sc)
 
-GraphST$set("public", "train", function() {
-  if (self$datatype %in% c("Stereo", "Slide")) {
-    # Encoder_sparse is imported
-    self$model <- Encoder_sparse(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-  } else {
-    #Encoder is imported
-    self$model <- Encoder(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-  }
-  
-  # Using nn_bce_with_logits_loss for the loss function
-  self$loss_CSL <- nn_bce_with_logits_loss()
-  
-  # Setting up the optimizer, assuming self$model has a parameters method similar to PyTorch
-  self$optimizer <- optim_adam(self$model$parameters(), lr = self$learning_rate, weight_decay = self$weight_decay)
-  
-  cat("Begin to train ST data...\n")
-  self$model$train()
-  
-})
 
-GraphSTR$set("public", "train", function() {
-  cat("Begin to train ST data...\n")
-  
-  pblapply(1:self$epochs, function(epoch) {
-    self$model$train()
-    
-    self$features_a <- permutation(self$features)  # Ensure permutation is defined
-    
-    # Assuming model returns a list with required elements
-    model_output <- self$model(self$features, self$features_a, self$adj)
-    self$hiden_feat <- model_output[[1]]
-    self$emb <- model_output[[2]]
-    ret <- model_output[[3]]
-    ret_a <- model_output[[4]]
-    
-    self$loss_sl_1 <- self$loss_CSL(ret, self$label_CSL)
-    self$loss_sl_2 <- self$loss_CSL(ret_a, self$label_CSL)
-    self$loss_feat <- nnf_mse_loss(self$features, self$emb)
-    
-    loss <-  self$alpha * self$loss_feat + self$beta * (self$loss_sl_1 + self$loss_sl_2)
-    
-    self$optimizer$zero_grad()
-    loss$backward()
-    self$optimizer$step()
-  }, .progress = TRUE)  #requires pbapply
-  
-  cat("Optimization finished for ST data!\n")
-})
-
-GraphSTR$set("public", "evaluate", function() {
+GraphST$set("public", "evaluate", function() {
   torch::no_grad({
     self$model$eval()
     
@@ -208,7 +209,7 @@ GraphSTR$set("public", "evaluate", function() {
     }
   })
 }) 
-GraphSTR$set("public", "train_sc", function() {
+GraphST$set("public", "train_sc", function() {
   # Assuming Encoder_sc is already defined in R
   self$model_sc <- Encoder_sc(self$dim_input, self$dim_output)$to(device = self$device)
   
@@ -231,7 +232,7 @@ GraphSTR$set("public", "train_sc", function() {
   
   cat("Optimization finished for cell representation learning!\n")
 })
-GraphSTR$set("public", "evaluate_sc", function() {
+GraphST$set("public", "evaluate_sc", function() {
   torch::no_grad({
     self$model_sc$eval()
     emb_sc <- self$model_sc(self$feat_sc)

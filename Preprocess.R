@@ -199,6 +199,7 @@ construct_interaction_KNN <- function(adata, n_neighbors = 3) {
 #' # View processed data
 #' print(pbmc_small)
 preprocess <- function(adata) {
+  
   # Find highly variable genes similar to Seurat's approach which aligns closely with "seurat_v3"
   adata <- FindVariableFeatures(adata, selection.method = "vst", nfeatures = 3000)
   
@@ -213,6 +214,9 @@ preprocess <- function(adata) {
   
   return(adata)
 }
+
+
+
 
 #' Extract and process features from single-cell RNA-seq data
 #'

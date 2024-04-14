@@ -1,20 +1,10 @@
 #utils
-install.packages("reticulate") 
-library(reticulate)
-library(mclust)
-library(Seurat)
-library(stats)
-library(igraph)
-library(leiden)
-library(Matrix)
 
 mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_obsm = 'emb_pca', random_seed = 2020) {
   # Clustering using the mclust algorithm
   # The parameters are the same as those in the R package mclust
   
   set.seed(random_seed)
-  library(mclust)
-  
   # Convert numpy array to R matrix
   adata_matrix <- as.matrix(adata$obsm[[used_obsm]])
   

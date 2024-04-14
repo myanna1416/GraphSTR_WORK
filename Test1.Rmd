@@ -23,6 +23,7 @@ library(igraph)
 library(leiden)
 library(leidenAlg)
 library(mclust)
+library(DESeq2)
 ```
 In this project, we demonstrate how to apply GraphST for identifying spatial domains on 10X Visium data. For this purpose, we analyze the sample 151673 from the dorsolateral prefrontal cortex (DLPFC) dataset. Maynard et al. have manually annotated the DLPFC layers and white matter, utilizing morphological features and gene markers.
 ##Load your data in
@@ -34,14 +35,165 @@ spe <- SpatialExperiment::read10xVisium(samples = data_dir,
 ```
 
 ```{r}
+source("Preprocess.R")
+source("utils.R")
+source("model.R")
+source("ZorFirstRproject.R")
+```
+
+```{r}
 n_clusters <- 7
 graphST_model <- GraphST$new(adata=spe)
 ```
 
 ```{r}
-# train model
-adata = graphST_model.train()
+spe
 ```
+```{r}
+# set radius to specify the number of neighbors considered during refinement
+radius <- 50
+tool <- 'mclust' # mclust, leiden, and louvain
+```
+##Spatial clusting and refinment
+
+```{r}
+if (tool == 'mclust') {
+  # For DLPFC dataset, we use optional refinement step.
+  clustering(spe, n_clusters, radius = radius, method = tool, refinement = TRUE)
+} else if (tool %in% c('leiden', 'louvain')) {
+  clustering(spe, n_clusters, radius = radius, method = tool, start = 0.1, end = 2.0, increment = 0.01, refinement = FALSE)
+}
+
+```
+##Visualize the results
+```{r}
+
+```
+
+##scRNA and ST data integration (deconvolution)
+```{r}
+dataset <- 'Human_Lymph_Node'
+
+```
+##Reading ST data 
+```{r}
+# read ST data
+Sys.setenv(RETICULATE_PYTHON = "/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate")
+library(reticulate)
+#/usr/local/bin/python3
+use_condaenv("/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate", required = TRUE)
+#py_install("scanpy", envname = reticulate::py_config()$envname) 
+#use_python("/opt/homebrew/bin/python3", required = NULL)
+#("/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate/bin/python3", required = NULL)
+#use_python("/Users/zoranaycoursey/opt/anaconda3/envs/r-reticulate", required = NULL)
+sc <- import("scanpy")
+file_fold <- "data/GraphData"
+file_path <- read_st_data(file_fold, 'ST.h5ad')
+# Read the .h5ad file
+adata <- sc$read_h5ad(file_path)
+#adata_sc.var_names_make_unique()
+#ALT environment location: /Users/zoranaycoursey/opt/anaconda3
+```
+
+
+```{r}
+# Source the script to load the functions
+source("Preprocess.R")
+```
+
+##Pre-processing for ST data
+```{r}
+# Check if functions are loaded
+if (!exists("preprocess") || !exists("construct_interaction") || !exists("add_contrastive_label")) {
+    stop("One or more required functions are not available. Check your source file.")
+}
+
+adata <- preprocess(adata)  # Preprocess data
+adata <- construct_interaction(adata)  # Build graph
+adata <- add_contrastive_label(adata)  # Add labels
+```
+
+##Reading reference data
+```{r}
+use_python("/Users/zoranaycoursey/opt/anaconda3")
+sc <- import("scanpy")
+file_fold <- "data/GraphData/Human_Lymph_Node"
+file_path <- read_st_data(file_fold, 'scRNA.h5ad')
+adata_sc <- sc.read(file_path)
+#adata_sc.var_names_make_unique()
+
+```
+
+##Pre-processing for reference data
+
+```{r}
+if (!exists("preprocess")) {
+    stop("One or more required functions are not available. Check your source file.")
+}
+adata_sc <- preprocess(adata_sc)  # Preprocess data
+```
+
+##Finding overlap genes between ST and reference data
+```{r}
+# Find overlapping genes
+results <- filter_with_overlap_gene(adata, adata_sc)
+adata <- results[[1]]  # Updated adata
+adata_sc <- results[[2]]  # Updated adata_sc
+```
+
+##Extracting features for ST data
+```{r}
+adata <-get_feature(adata)
+```
+
+##Implementing GraphST for cell type deconvolution
+```{r}
+library(torch)
+# Set device based on CUDA availability
+device <- if (cuda_is_available()) {
+    torch_device("cuda:1")  # Use the second GPU
+} else {
+    torch_device("cpu")
+}
+```
+
+```{r}
+source("ZorFirstRproject.R")
+# Initialize the model
+model <- GraphST$new(adata=adata, adata_sc=adata_sc, epochs=1200, random_seed=50, device=device, deconvolution=TRUE)
+```
+
+```{r}
+# Train the model and get the updated adata and adata_sc
+results <- model$train_map()
+adata <- results[[1]]
+adata_sc <- results[[2]]
+```
+
+##Visualization of single cell data distribution in ST tissue
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
