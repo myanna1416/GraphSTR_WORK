@@ -45,47 +45,32 @@ GraphST <- R6::R6Class(
       
       
       
-      # Check for 'highly_variable' in adata$var
-      if (!"highly_variable" %in% names(self$adata$var)) {
         self$adata <- preprocess(self$adata)
-      }
+  
+        self$adata <- construct_interaction(self$adata)
       
-      # Check for 'adj' in adata$obsm and construct interaction matrices
-      if (!"adj" %in% names(self$adata$obsm)) {
-        if (self$datatype %in% c("Stereo", "Slide")) {
-          self$adata <- construct_interaction_KNN(self$adata)
-        } else {
-          self$adata <- construct_interaction(self$adata)
-        }
-      }
-      
-      # Check for 'label_CSL' in adata$obsm and add contrastive labels
-      if (!"label_CSL" %in% names(self$adata$obsm)) {
+  
         self$adata <- add_contrastive_label(self$adata)
-      }
-      
-      # Check for 'feat' in adata$obsm and extract features
-      if (!"feat" %in% names(self$adata$obsm)) {
+
         self$adata <- get_feature(self$adata)
-      }
       
       # Convert 'feat' to a torch tensor and move to the specified device
       self$features <-
-        torch_tensor(as.array(self$adata$obsm$feat), 
+        torch_tensor(as.array(self$adata@misc$feat), 
                      dtype = torch_float32)$to(device = self$device)
       # Convert 'feat_a' to a torch tensor and move to the specified device
       self$features_a <-
-        torch_tensor(as.array(self$adata$obsm$feat_a), 
+        torch_tensor(as.array(self$adata@misc$feat_a), 
                      dtype = torch_float32)$to(device = self$device)
       # Convert 'label_CSL' to a torch tensor and move to the specified device
       self$label_CSL <-
-        torch_tensor(as.array(self$adata$obsm$label_CSL), 
+        torch_tensor(as.array(self$adata@misc$label_CSL), 
                      dtype = torch_float32)$to(device = self$device)
       # For 'adj', we simply reference it as it does not necessarily need conversion for this context
-      self$adj <- self$adata$obsm$adj
+      self$adj <- self$adata@misc$adj
       n <- nrow(self$adj)
       self$graph_neigh <-
-        torch_tensor(as.array(self$adata$obsm$graph_neigh) + diag(rep(1, n)), 
+        torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)), 
                      dtype = torch_float32)$to(device = self$device)
       self$dim_input <- dim(self$features)[2]
       self$dim_output <- dim_output
@@ -126,11 +111,9 @@ GraphST <- R6::R6Class(
     },
     
     train = function() {
-      if (self$datatype %in% c('Stereo', 'Slide')) {
-        self$model <- Encoder_sparse$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-      } else {
+      
         self$model <- Encoder$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-      }
+    
       self$loss_CSL <- nn_bce_with_logits_loss()
       self$optimizer <- optim_adam(self$model$parameters(), lr = self$learning_rate, weight_decay = self$weight_decay)
       
@@ -164,12 +147,8 @@ GraphST <- R6::R6Class(
           self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]
           return(self$emb_rec)
         } else {
-          if (self$datatype %in% c('Stereo', 'Slide')) {
-            self$emb_rec <- normalize(self$model(self$features, self$features_a, self$adj)[[2]], p = 2, dim = 2)$detach()$cpu()$numpy()
-          } else {
-            self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
-          }
-          self$adata$obsm[['emb']] <- self$emb_rec
+          self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
+          self$adata@misc[['emb']] <- self$emb_rec
           return(self$adata)
         }
       })
@@ -196,14 +175,11 @@ GraphST$set("public", "evaluate", function() {
       model_output <- self$model(self$features, self$features_a, self$adj)
       self$emb_rec <- model_output[[2]]  # Similarly assuming the second element
       
-      if (self$datatype %in% c("Stereo", "Slide")) {
-        self$emb_rec <- nnf_normalize(self$emb_rec, p = 2, dim = 2)$detach()$cpu()$numpy()
-      } else {
+  
         self$emb_rec <- self$emb_rec$detach()$cpu()$numpy()
-      }
       
-      # Assuming self$adata is a list or environment and has an element $obsm where 'emb' can be stored
-      self$adata$obsm$emb <- self$emb_rec
+      # Assuming self$adata is a list or environment and has an element @misc where 'emb' can be stored
+      self$adata@misc$emb <- self$emb_rec
       
       return(self$adata)
     }
@@ -244,9 +220,9 @@ GraphST$set("public", "train_map", function() {
   emb_sp <- self$train()
   emb_sc <- self$train_sc()
   
-  # Assuming adata and adata_sc are list-like objects with an 'obsm' list for embeddings
-  self$adata$obsm$emb_sp <- emb_sp$detach()$cpu()$numpy()
-  self$adata_sc$obsm$emb_sc <- emb_sc$detach()$cpu()$numpy()
+  # Assuming adata and adata_sc are list-like objects with an 'misc' list for embeddings
+  self$adata@misc$emb_sp <- emb_sp$detach()$cpu()$numpy()
+  self$adata_sc@misc$emb_sc <- emb_sc$detach()$cpu()$numpy()
   
   # Normalize features for consistency between ST and scRNA-seq
   emb_sp <- nnf_normalize(emb_sp, p = 2, eps = 1e-12, dim = 2)
@@ -297,9 +273,9 @@ GraphST$set("public", "finalize_mapping", function(emb_sp, emb_sc) {
     
     # Assigning processed embeddings and mapping matrix back to adata structures
     # Assuming self$adata and self$adata_sc are list-like structures that can hold these values
-    self$adata$obsm$emb_sp <- emb_sp
-    self$adata_sc$obsm$emb_sc <- emb_sc
-    self$adata$obsm$map_matrix <- t(map_matrix) # Transpose for spot x cell organization
+    self$adata@misc$emb_sp <- emb_sp
+    self$adata_sc@misc$emb_sc <- emb_sc
+    self$adata@misc$map_matrix <- t(map_matrix) # Transpose for spot x cell organization
     
     return(list(self$adata, self$adata_sc))
   })

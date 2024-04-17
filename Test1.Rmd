@@ -15,6 +15,7 @@ library(Dict)
 library(transport)
 library(otinference)
 library(Seurat)# Load data and create a Seurat object, analogous to using scanpy
+library(SeuratObject)
 library(FNN) 
 library(reticulate)
 library(stats)
@@ -28,10 +29,15 @@ library(DESeq2)
 In this project, we demonstrate how to apply GraphST for identifying spatial domains on 10X Visium data. For this purpose, we analyze the sample 151673 from the dorsolateral prefrontal cortex (DLPFC) dataset. Maynard et al. have manually annotated the DLPFC layers and white matter, utilizing morphological features and gene markers.
 ##Load your data in
 ```{r}
-data_dir <- "data/GraphData"
-spe <- SpatialExperiment::read10xVisium(samples = data_dir,
-                                   type = "HDF5",
-                                   data = "filtered")
+data_dir <- "data/GraphData/outs"
+
+spe <- Load10X_Spatial(data.dir = data_dir)
+
+
+#spe <- SpatialExperiment::read10xVisium(samples = data_dir,
+                                  # type = "HDF5",
+                                  # data = "filtered")
+
 ```
 
 ```{r}
@@ -69,6 +75,8 @@ if (tool == 'mclust') {
 ```{r}
 
 ```
+
+
 
 ##scRNA and ST data integration (deconvolution)
 ```{r}

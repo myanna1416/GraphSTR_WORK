@@ -84,23 +84,22 @@ permutation <- function(feature) {
 #' The resulting interaction matrix is symmetric, with ones indicating neighbor relationships
 #' and zeros otherwise. This matrix can be used for graph-based analyses.
 #'
-#' @param adata An object containing spatial coordinates in `adata$obsm$spatial`.
+#' @param adata An object containing spatial coordinates in `adata@misc$spatial`.
 #' @param n_neighbors The number of nearest neighbors to identify for each point; default is 3.
 #' @return The input `adata` object, modified to include the new `distance_matrix`, `graph_neigh`, 
-#'         and `adj` (symmetrical adjacency matrix) within `adata$obsm`.
+#'         and `adj` (symmetrical adjacency matrix) within `adata@misc`.
 #' @examples
-#' adata <- list(obsm = list(spatial = matrix(runif(20), ncol = 2)))
+#' adata <- list(misc = list(spatial = matrix(runif(20), ncol = 2)))
 #' adata <- construct_interaction(adata, n_neighbors = 3)
-#' print(adata$obsm$adj)
+#' print(adata@misc$adj)
 construct_interaction <- function(adata, n_neighbors = 3) {
-  # Assuming 'spatial' coordinates are stored similarly to Python's AnnData `obsm`
-  position <- adata$obsm$spatial
+  position <- adata@assays$spatial
   
   # Calculate distance matrix using Euclidean distance
   distance_matrix <- as.matrix(dist(position))
   n_spot <- nrow(distance_matrix)
   
-  adata$obsm$distance_matrix <- distance_matrix
+  adata@misc$distance_matrix <- distance_matrix
   
   # Initialize the interaction matrix with zeros
   interaction <- matrix(0, nrow = n_spot, ncol = n_spot)
@@ -115,13 +114,13 @@ construct_interaction <- function(adata, n_neighbors = 3) {
     }
   }
   
-  adata$obsm$graph_neigh <- interaction
+  adata@misc$graph_neigh <- interaction
   
   # Transform adjacency matrix to be symmetrical
   adj <- interaction + t(interaction)  # Transpose and add
   adj <- ifelse(adj > 1, 1, adj)  # Cap values at 1
   
-  adata$obsm$adj <- adj
+  adata@misc$adj <- adj
   
   return(adata)
 }
@@ -134,19 +133,20 @@ construct_interaction <- function(adata, n_neighbors = 3) {
 #' and zeros otherwise. This matrix can be used for graph-based analyses such as clustering
 #' and community detection.
 #'
-#' @param adata An object containing spatial coordinates in `adata$obsm$spatial`, expected
+#' @param adata An object containing spatial coordinates in `adata@misc$spatial`, expected
 #' to be a matrix or a data frame with rows as observations and columns as dimensions.
 #' @param n_neighbors The number of nearest neighbors to identify for each point; default is 3.
 #' This does not include the point itself.
 #' @return The input `adata` object, modified to include the new `graph_neigh` and `adj`
-#' (symmetrical adjacency matrix) within `adata$obsm`.
+#' (symmetrical adjacency matrix) within `adata@misc`.
 #' @examples
-#' adata <- list(obsm = list(spatial = matrix(rnorm(20), ncol = 2)))
+#' adata <- list(misc = list(spatial = matrix(rnorm(20), ncol = 2)))
 #' adata <- construct_interaction_KNN(adata, n_neighbors = 3)
-#' print(adata$obsm$adj)
+#' print(adata@misc$adj)
 construct_interaction_KNN <- function(adata, n_neighbors = 3) {
-  # Assuming 'spatial' is a matrix or data frame in adata$obsm
-  position <- adata$obsm$spatial
+  # Assuming 'spatial' is a matrix or data frame in adata@misc
+  position <- GetTissueCoordinates(adata,scale = NULL)
+  position <- position[,c(2,1)]
   n_spot <- nrow(position)
   
   # Fit nearest neighbors model and find neighbors
@@ -167,13 +167,13 @@ construct_interaction_KNN <- function(adata, n_neighbors = 3) {
     interaction[x[i], y[i]] <- 1
   }
   
-  adata$obsm$graph_neigh <- interaction
+  adata@misc$graph_neigh <- interaction
   
   # Transform adjacency matrix to be symmetrical
   adj <- interaction + t(interaction)  # Add transpose of itself
   adj <- ifelse(adj > 1, 1, adj)  # Ensure all values are capped at 1
   
-  adata$obsm$adj <- adj
+  adata@misc$adj <- adj
   
   cat('Graph constructed!\n')
   return(adata)
@@ -229,12 +229,12 @@ preprocess <- function(adata) {
 #' @param deconvolution A logical indicating whether to use all data or only highly variable genes
 #'                      for feature extraction. Default is `FALSE`, meaning only highly variable genes are used.
 #' @return The `adata` object with additional slots for features (`feat`) and permuted features (`feat_a`)
-#'         in the `obsm` component.
+#'         in the `misc` component.
 #' @examples
 #' # Assuming 'sce' is a Seurat object with 'highly_variable' metadata:
 #' sce <- get_feature(sce)
-#' print(sce$obsm$feat)  # Features
-#' print(sce$obsm$feat_a)  # Augmented features
+#' print(sce@misc$feat)  # Features
+#' print(sce@misc$feat_a)  # Augmented features
 get_feature <- function(adata, deconvolution = FALSE) {
   
   # Conditionally select data based on 'highly_variable' markers or not
@@ -257,27 +257,27 @@ get_feature <- function(adata, deconvolution = FALSE) {
   feat_a <- permutation(feat)  # Ensure permutation function is defined in R
   
   # Store features and augmented features back into adata object
-  adata$obsm$feat <- feat
-  adata$obsm$feat_a <- feat_a
+  adata@misc$feat <- feat
+  adata@misc$feat_a <- feat_a
   
   return(adata)
 }
 
 #' Add contrastive labels to a data object
 #'
-#' This function creates and appends a contrastive label matrix to the 'obsm' component of 
+#' This function creates and appends a contrastive label matrix to the 'misc' component of 
 #' the provided data object. Each label matrix consists of two columns, one filled with ones
 #' and the other with zeros, representing binary class labels for contrastive learning tasks.
 #'
 #' @param adata A data object, typically structured similarly to a Seurat or anndata object, 
 #'              expected to contain a data matrix in `adata$X`.
-#' @return The `adata` object with a new `label_CSL` matrix appended to the `obsm` component.
+#' @return The `adata` object with a new `label_CSL` matrix appended to the `misc` component.
 #'         This matrix has one column of ones and one column of zeros.
 #' @examples
 #' # Assume 'adata' is a data object with a matrix `adata$X` containing observational data
 #' adata <- list(X = matrix(rnorm(20), ncol = 2, nrow = 10))
 #' adata <- add_contrastive_label(adata)
-#' print(adata$obsm$label_CSL)  # Print the contrastive labels
+#' print(adata@misc$label_CSL)  # Print the contrastive labels
 add_contrastive_label <- function(adata) {
   # Number of observations (spots)
   n_spot <- nrow(adata$X)  # Assuming adata is structured such that adata$X contains the data matrix
@@ -289,11 +289,11 @@ add_contrastive_label <- function(adata) {
   # Concatenate matrices to form the label matrix
   label_CSL <- cbind(one_matrix, zero_matrix)
   
-  # Store the contrastive label in the adata object under 'obsm'
-  if (!"obsm" %in% names(adata)) {
-    adata$obsm <- list()
+  # Store the contrastive label in the adata object under 'misc'
+  if (!"misc" %in% names(adata)) {
+    adata@misc <- list()
   }
-  adata$obsm$label_CSL <- label_CSL
+  adata@misc$label_CSL <- label_CSL
   
   return(adata)
 }

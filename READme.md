@@ -54,3 +54,31 @@ GraphST$set("public", "train", function() {
   
   cat("Optimization finished for ST data!\n")
 })
+
+
+
+#DUMMY CODE Zor.R 
+
+      # Check for 'highly_variable' in adata$var
+      if (!("highly_variable" %in% names(self$adata$var))) {
+        self$adata <- preprocess(self$adata)
+      }
+      
+      # Check for 'adj' in adata$obsm and construct interaction matrices
+      if (!("adj" %in% names(self$adata$obsm))) {
+        if (self$datatype %in% c("Stereo", "Slide")) {
+          self$adata <- construct_interaction_KNN(self$adata)
+        } else {
+          self$adata <- construct_interaction(self$adata)
+        }
+      }
+      
+      # Check for 'label_CSL' in adata$obsm and add contrastive labels
+      if (!("label_CSL" %in% names(self$adata$obsm))) {
+        self$adata <- add_contrastive_label(self$adata)
+      }
+      
+      # Check for 'feat' in adata$obsm and extract features
+      if (!("feat" %in% names(self$adata$obsm))) {
+        self$adata <- get_feature(self$adata)
+      }

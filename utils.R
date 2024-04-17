@@ -1,12 +1,12 @@
 #utils
 
-mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_obsm = 'emb_pca', random_seed = 2020) {
+mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_misc = 'emb_pca', random_seed = 2020) {
   # Clustering using the mclust algorithm
   # The parameters are the same as those in the R package mclust
   
   set.seed(random_seed)
   # Convert numpy array to R matrix
-  adata_matrix <- as.matrix(adata$obsm[[used_obsm]])
+  adata_matrix <- as.matrix(adata@misc[[used_misc]])
   
   # Call Mclust function
   res <- Mclust(data = adata_matrix, G = num_cluster, modelNames = modelNames)
@@ -22,14 +22,14 @@ mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_obsm = 'emb_pc
 clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method = 'mclust', 
                        start = 0.1, end = 3.0, increment = 0.01, refinement = FALSE) {
   # Perform PCA
-  pca <- prcomp(adata$obsm[[key]], center = TRUE, scale. = TRUE, retx = TRUE)
+  pca <- prcomp(adata@misc[[key]], center = TRUE, scale. = TRUE, retx = TRUE)
   embedding <- pca$x
-  adata$obsm[['emb_pca']] <- embedding
+  adata@misc[['emb_pca']] <- embedding
   
   if (method == 'mclust') {
     # Assuming mclust_R() is a placeholder for an actual mclust implementation in R
-    adata <- mclust_R(adata, used_obsm = 'emb_pca', num_cluster = n_clusters)
-    adata$obs[['domain']] <- as.factor(adata$obs[['mclust']])
+    adata <- mclust_R(adata, used_misc = 'emb_pca', num_cluster = n_clusters)
+    adata@misc[['domain']] <- as.factor(adata@misc[['mclust']])
   } else if (method == 'leiden') {
     # Convert data to igraph object
     dist_matrix <- dist(embedding)
@@ -71,7 +71,7 @@ refine_label <- function(adata, radius = 50, key = 'label') {
   old_type <- as.character(adata$obs[[key]])
   
   # Calculate distance
-  position <- adata$obsm[['spatial']]
+  position <- adata@misc[['spatial']]
   distance <- ot::dist(position, position, metric = 'euclidean')
   n_cell <- nrow(distance)
   
@@ -120,12 +120,12 @@ construct_cell_type_matrix <- function(adata_sc) {
   return(mat)
 }
 
-# Convert Python function to R
+
 project_cell_to_spot <- function(adata, adata_sc, retain_percent = 0.1) {
-  # Project cell types onto ST data using mapped matrix in adata.obsm
+  # Project cell types onto ST data using mapped matrix in adata.misc
   
   # Read map matrix
-  map_matrix <- adata$obsm[['map_matrix']]  # spot x cell
+  map_matrix <- adata@misc[['map_matrix']]  # spot x cell
   
   # Extract top-k values for each spot
   map_matrix <- extract_top_value(map_matrix)  # filtering by spot
