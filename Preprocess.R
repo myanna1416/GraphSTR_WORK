@@ -93,7 +93,9 @@ permutation <- function(feature) {
 #' adata <- construct_interaction(adata, n_neighbors = 3)
 #' print(adata@misc$adj)
 construct_interaction <- function(adata, n_neighbors = 3) {
-  position <- adata@assays$spatial
+  position <- GetTissueCoordinates(adata,scale = NULL)
+  position <- position[,c(2,1)]
+  adata@misc$spatial <- position
   
   # Calculate distance matrix using Euclidean distance
   distance_matrix <- as.matrix(dist(position))
@@ -122,60 +124,6 @@ construct_interaction <- function(adata, n_neighbors = 3) {
   
   adata@misc$adj <- adj
   
-  return(adata)
-}
-
-#' Construct a K-nearest neighbors interaction matrix
-#'
-#' This function constructs an interaction matrix for given spatial data by identifying
-#' the k-nearest neighbors for each point using the Euclidean distance. The resulting
-#' interaction matrix is symmetric, with ones indicating neighbor relationships
-#' and zeros otherwise. This matrix can be used for graph-based analyses such as clustering
-#' and community detection.
-#'
-#' @param adata An object containing spatial coordinates in `adata@misc$spatial`, expected
-#' to be a matrix or a data frame with rows as observations and columns as dimensions.
-#' @param n_neighbors The number of nearest neighbors to identify for each point; default is 3.
-#' This does not include the point itself.
-#' @return The input `adata` object, modified to include the new `graph_neigh` and `adj`
-#' (symmetrical adjacency matrix) within `adata@misc`.
-#' @examples
-#' adata <- list(misc = list(spatial = matrix(rnorm(20), ncol = 2)))
-#' adata <- construct_interaction_KNN(adata, n_neighbors = 3)
-#' print(adata@misc$adj)
-construct_interaction_KNN <- function(adata, n_neighbors = 3) {
-  # Assuming 'spatial' is a matrix or data frame in adata@misc
-  position <- GetTissueCoordinates(adata,scale = NULL)
-  position <- position[,c(2,1)]
-  n_spot <- nrow(position)
-  
-  # Fit nearest neighbors model and find neighbors
-  nbrs <- get.knnx(data = position, query = position, k = n_neighbors + 1)
-  
-  # Prepare indices for interaction matrix construction
-  indices <- nbrs$nn.index
-  
-  # R uses 1-based indexing, adjusting for that here
-  x <- rep(seq_len(n_spot), each = n_neighbors)
-  y <- as.vector(t(indices[, -1]))  # Remove the first column and flatten the rest
-  
-  # Initialize the interaction matrix with zeros
-  interaction <- matrix(0, nrow = n_spot, ncol = n_spot)
-  
-  # Populate the interaction matrix
-  for (i in seq_along(x)) {
-    interaction[x[i], y[i]] <- 1
-  }
-  
-  adata@misc$graph_neigh <- interaction
-  
-  # Transform adjacency matrix to be symmetrical
-  adj <- interaction + t(interaction)  # Add transpose of itself
-  adj <- ifelse(adj > 1, 1, adj)  # Ensure all values are capped at 1
-  
-  adata@misc$adj <- adj
-  
-  cat('Graph constructed!\n')
   return(adata)
 }
 
@@ -242,23 +190,28 @@ get_feature <- function(adata, deconvolution = FALSE) {
     adata_Vars <- adata
   } else {
     # Assume adata is a list-like structure or a Seurat object with var metadata
-    highly_variable_indices <- which(adata$var$highly_variable)
-    adata_Vars <- adata[, highly_variable_indices]
+    highly_variable_features <- VariableFeatures(adata)
+    #adata_Vars <- adata[highly_variable_features,]
+    adata_Vars <- subset(adata, features = highly_variable_features)
   }
   
+  assay_data <- GetAssayData(adata_Vars, slot = "counts")
+  
   # Check if the data matrix is sparse and convert to dense if necessary
-  if (inherits(adata_Vars$X, "sparseMatrix")) {
-    feat <- as.matrix(adata_Vars$X)  # Convert sparse matrix to dense matrix
+  if (inherits(assay_data, "dgCMatrix")) {  # 'dgCMatrix' is the class for sparse matrices in R
+    feat <- as.matrix(assay_data)  # Convert sparse matrix to dense matrix
   } else {
-    feat <- adata_Vars$X
+    feat <- assay_data  # Directly use the matrix if it is already dense
   }
   
   # Data augmentation by permuting features
-  feat_a <- permutation(feat)  # Ensure permutation function is defined in R
+  feat_a <- permutation(feat)  
   
   # Store features and augmented features back into adata object
-  adata@misc$feat <- feat
-  adata@misc$feat_a <- feat_a
+  #adata@misc$feat <- feat
+  #adata@misc$feat_a <- feat_a
+  adata[['feat']] <- CreateAssayObject(feat)  # Create new assay for original features
+  adata[['feat_a']] <- CreateAssayObject(feat_a) # Create new assay for permuted features
   
   return(adata)
 }
@@ -279,8 +232,10 @@ get_feature <- function(adata, deconvolution = FALSE) {
 #' adata <- add_contrastive_label(adata)
 #' print(adata@misc$label_CSL)  # Print the contrastive labels
 add_contrastive_label <- function(adata) {
+  
+  #replaceing Adata$X with GetAssayData(adata)
   # Number of observations (spots)
-  n_spot <- nrow(adata$X)  # Assuming adata is structured such that adata$X contains the data matrix
+  n_spot <- nrow(GetAssayData(adata))  # Assuming adata is structured such that adata$X contains the data matrix
   
   # Create matrices of ones and zeros
   one_matrix <- matrix(1, nrow = n_spot, ncol = 1)
@@ -319,7 +274,7 @@ add_contrastive_label <- function(adata) {
 #' print(normalized_adj)
 normalize_adj <- function(adj) {
   # Convert the adjacency matrix to a sparse matrix in coordinate format
-  adj <- as(adj, "CsparseMatrix")  # Ensuring it is a sparse matrix
+  adj <- Matrix::as(adj, "CsparseMatrix")  # Ensuring it is a sparse matrix
   
   # Calculate the sum of each row (degree of nodes)
   rowsum <- rowSums(adj)
@@ -329,7 +284,7 @@ normalize_adj <- function(adj) {
   d_inv_sqrt[is.infinite(d_inv_sqrt)] <- 0  # Replace Inf with 0
   
   # Create a diagonal matrix of D^(-1/2)
-  d_mat_inv_sqrt <- Diagonal(x = d_inv_sqrt)
+  d_mat_inv_sqrt <- Matrix::Diagonal(x = d_inv_sqrt, sparse = TRUE)
   
   # Perform symmetric normalization: A' = D^(-1/2) * A * D^(-1/2)
   adj_normalized <- d_mat_inv_sqrt %*% adj %*% d_mat_inv_sqrt

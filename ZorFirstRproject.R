@@ -56,12 +56,12 @@ GraphST <- R6::R6Class(
       
       # Convert 'feat' to a torch tensor and move to the specified device
       self$features <-
-        torch_tensor(as.array(self$adata@misc$feat), 
-                     dtype = torch_float32)$to(device = self$device)
+          torch_tensor(as.array(self$adata$feat), 
+                       dtype = torch_float32())$to(device = self$device)
       # Convert 'feat_a' to a torch tensor and move to the specified device
       self$features_a <-
         torch_tensor(as.array(self$adata@misc$feat_a), 
-                     dtype = torch_float32)$to(device = self$device)
+                     dtype = torch_float32())$to(device = self$device)
       # Convert 'label_CSL' to a torch tensor and move to the specified device
       self$label_CSL <-
         torch_tensor(as.array(self$adata@misc$label_CSL), 
