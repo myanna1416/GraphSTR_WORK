@@ -61,7 +61,7 @@ filter_with_overlap_gene <- function(adata, adata_sc) {
 #' print("Permuted matrix:")
 #' permuted_matrix <- permutation(data_matrix)
 #' print(permuted_matrix)
-permutation <- function(feature) {
+permute_features <- function(feature) {
   set.seed(41) #later check on this seed number 
   
   # Generate indices for the feature matrix
@@ -205,13 +205,13 @@ get_feature <- function(adata, deconvolution = FALSE) {
   }
   
   # Data augmentation by permuting features
-  feat_a <- permutation(feat)  
+  feat_a <- permute_features(feat)  
   
   # Store features and augmented features back into adata object
-  #adata@misc$feat <- feat
-  #adata@misc$feat_a <- feat_a
-  adata[['feat']] <- CreateAssayObject(feat)  # Create new assay for original features
-  adata[['feat_a']] <- CreateAssayObject(feat_a) # Create new assay for permuted features
+  adata@misc$feat <- feat
+  adata@misc$feat_a <- feat_a
+  #adata[['feat']] <- CreateAssayObject(feat)  # Create new assay for original features
+  #adata[['feat_a']] <- CreateAssayObject(feat_a) # Create new assay for augmented features
   
   return(adata)
 }

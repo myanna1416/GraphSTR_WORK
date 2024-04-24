@@ -3,14 +3,29 @@ GraphST <- R6::R6Class(
   "GraphST",
   public = list(
     adata = NULL,
-    adata_sc = NULL,  # Adding adata_sc for scRNA-seq data
+    features = NULL,
+    features_a = NULL,
+    label_CSL = NULL,
+    adj = NULL,
+    graph_neigh = NULL,
+    dim_input = NULL,
+    dim_output = NULL,
+    feat_sc = NULL,
+    feat_sp = NULL,
+    n_cell = NULL,
+    n_spot = NULL,
+    dim_input_sc = NULL,
+    dim_output_sc = NULL,
+    emb_rec = NULL,
+    adata_sc = NULL,
+    # Adding adata_sc for scRNA-seq data
     device = "cpu",
     learning_rate = 0.001,
     learning_rate_sc = 0.01,
     weight_decay = 0.00,
     epochs = 600,
-    dim_input = 3000,  
-    dim_output = 64,  
+    dim_input = 3000,
+    dim_output = 64,
     random_seed = 41,
     alpha = 10,
     beta = 1,
@@ -21,11 +36,22 @@ GraphST <- R6::R6Class(
     datatype = "10X",
     
     #constructor function
-    initialize = function(adata, adata_sc = NULL, device = "cpu", learning_rate = 0.001, learning_rate_sc = 0.01,
-                          weight_decay = 0.00, epochs = 600, random_seed = 41, alpha = 10, 
-                          beta = 1, theta = 0.1, lamda1 = 10, lamda2 = 1, 
-                          deconvolution = FALSE, datatype = "10X") {
-      self$adata <- adata  
+    initialize = function(adata,
+                          adata_sc = NULL,
+                          device = "cpu",
+                          learning_rate = 0.001,
+                          learning_rate_sc = 0.01,
+                          weight_decay = 0.00,
+                          epochs = 600,
+                          random_seed = 41,
+                          alpha = 10,
+                          beta = 1,
+                          theta = 0.1,
+                          lamda1 = 10,
+                          lamda2 = 1,
+                          deconvolution = FALSE,
+                          datatype = "10X") {
+      self$adata <- adata
       self$adata_sc <- adata_sc  # Initialize adata_sc
       self$device <- device
       self$learning_rate <- learning_rate
@@ -40,50 +66,63 @@ GraphST <- R6::R6Class(
       self$lamda2 <- lamda2
       self$deconvolution <- deconvolution
       self$datatype <- datatype
+      self$features_a <- NULL
+      self$label_CSL <- NULL
+      self$adj <- NULL
+      self$graph_neigh <- NULL
+      self$dim_input <- NULL
+      self$dim_output <- NULL
+      self$feat_sc <- NULL
+      self$feat_sp <- NULL
+      self$n_cell <- NULL
+      self$n_spot <- NULL
+      self$dim_input_sc <- NULL
+      self$dim_output_sc <- NULL
+      self$emb_rec <- NULL 
+      
+      
+      
       
       set.seed(self$random_seed)  # Fix the seed for reproducibility
       
       
       
-        self$adata <- preprocess(self$adata)
-  
-        self$adata <- construct_interaction(self$adata)
+      self$adata <- preprocess(self$adata)
       
-  
-        self$adata <- add_contrastive_label(self$adata)
-
-        self$adata <- get_feature(self$adata)
+      self$adata <- construct_interaction(self$adata)
+      
+      
+      self$adata <- add_contrastive_label(self$adata)
+      
+      self$adata <- get_feature(self$adata)
       
       # Convert 'feat' to a torch tensor and move to the specified device
       self$features <-
-          torch_tensor(as.array(self$adata$feat), 
-                       dtype = torch_float32())$to(device = self$device)
+        torch_tensor(as.array(self$adata@misc$feat),
+                     dtype = torch_float32())$to(device = self$device)
       # Convert 'feat_a' to a torch tensor and move to the specified device
       self$features_a <-
-        torch_tensor(as.array(self$adata@misc$feat_a), 
+        torch_tensor(as.array(self$adata@misc$feat_a),
                      dtype = torch_float32())$to(device = self$device)
       # Convert 'label_CSL' to a torch tensor and move to the specified device
       self$label_CSL <-
-        torch_tensor(as.array(self$adata@misc$label_CSL), 
-                     dtype = torch_float32)$to(device = self$device)
+        torch_tensor(as.array(self$adata@misc$label_CSL),
+                     dtype = torch_float32())$to(device = self$device)
       # For 'adj', we simply reference it as it does not necessarily need conversion for this context
       self$adj <- self$adata@misc$adj
       n <- nrow(self$adj)
       self$graph_neigh <-
-        torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)), 
-                     dtype = torch_float32)$to(device = self$device)
+        torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)),
+                     dtype = torch_float32())$to(device = self$device)
       self$dim_input <- dim(self$features)[2]
       self$dim_output <- dim_output
       
       self$adj <- preprocess_adj(self$adj)
-      self$adj <-torch_tensor(self$adj, dtype = torch_float32)$to(device = self$device)
-      #-- you could use this alt. --
-      #--self$adj <- torch_tensor(as.array(self$adj), dtype = torch_float32)$to(device = self$device)
+      self$adj <- torch_tensor(as.array(self$adj), dtype = torch_float32())$to(device = self$device)
+      
       if (self$deconvolution) {
         self$adata_sc <-
           self$adata_sc$clone(deep = TRUE)
-        
-        # Assuming self$feat_sc and self$feat_sp are numeric matrices or data frames in R
         
         # Replace NA (equivalent to NaN in Python) with 0 for self$feat_sc
         self$feat_sc[is.na(self$feat_sc)] <- 0
@@ -111,20 +150,28 @@ GraphST <- R6::R6Class(
     },
     
     train = function() {
+      self$model <-
+        Encoder$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
       
-        self$model <- Encoder$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-    
       self$loss_CSL <- nn_bce_with_logits_loss()
-      self$optimizer <- optim_adam(self$model$parameters(), lr = self$learning_rate, weight_decay = self$weight_decay)
+      self$optimizer <-
+        optim_adam(
+          self$model$parameters(),
+          lr = self$learning_rate,
+          weight_decay = self$weight_decay
+        )
       
       cat("Begin to train ST data...\n")
-      pb <- progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
+      pb <-
+        progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
       
       for (epoch in 1:self$epochs) {
         self$model$train()
         
-        self$features_a <- permutation(self$features)  # Ensure this function is defined to shuffle features
-        list(hidden_feat, emb, ret, ret_a) <- self$model(self$features, self$features_a, self$adj)
+        self$features_a2 <-
+          permute_features(self$features)  # Ensure this function is defined to shuffle features
+        list(hidden_feat, emb, ret, ret_a) <-
+          self$model(self$features, self$features_a2, self$adj)
         
         loss_sl_1 <- self$loss_CSL(ret, self$label_CSL)
         loss_sl_2 <- self$loss_CSL(ret_a, self$label_CSL)
@@ -144,10 +191,12 @@ GraphST <- R6::R6Class(
       no_grad({
         self$model$eval()
         if (self$deconvolution) {
-          self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]
+          self$emb_rec <-
+            self$model(self$features, self$features_a, self$adj)[[2]]
           return(self$emb_rec)
         } else {
-          self$emb_rec <- self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
+          self$emb_rec <-
+            self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
           self$adata@misc[['emb']] <- self$emb_rec
           return(self$adata)
         }
@@ -186,7 +235,7 @@ GraphST$set("public", "evaluate", function() {
   })
 }) 
 GraphST$set("public", "train_sc", function() {
-  # Assuming Encoder_sc is already defined in R
+  
   self$model_sc <- Encoder_sc(self$dim_input, self$dim_output)$to(device = self$device)
   
   # Setting up the optimizer for the single-cell model
@@ -194,7 +243,6 @@ GraphST$set("public", "train_sc", function() {
   
   cat('Begin to train scRNA data...\n')
   
-  # Assuming the epochs are defined; replace tqdm with pbapply for progress bar in R
   pbapply::pblapply(1:self$epochs, function(epoch) {
     self$model_sc$train()
     
