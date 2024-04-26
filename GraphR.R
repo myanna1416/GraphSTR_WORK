@@ -8,8 +8,6 @@ GraphST <- R6::R6Class(
     label_CSL = NULL,
     adj = NULL,
     graph_neigh = NULL,
-    dim_input = NULL,
-    dim_output = NULL,
     feat_sc = NULL,
     feat_sp = NULL,
     n_cell = NULL,
@@ -43,6 +41,8 @@ GraphST <- R6::R6Class(
                           learning_rate_sc = 0.01,
                           weight_decay = 0.00,
                           epochs = 600,
+                          dim_input = 3000,
+                          dim_output = 64,
                           random_seed = 41,
                           alpha = 10,
                           beta = 1,
@@ -81,19 +81,15 @@ GraphST <- R6::R6Class(
       self$emb_rec <- NULL 
       
       
-      
-      
       set.seed(self$random_seed)  # Fix the seed for reproducibility
-      
       
       
       self$adata <- preprocess(self$adata)
       
       self$adata <- construct_interaction(self$adata)
       
-      
       self$adata <- add_contrastive_label(self$adata)
-      
+     
       self$adata <- get_feature(self$adata)
       
       # Convert 'feat' to a torch tensor and move to the specified device
@@ -111,8 +107,7 @@ GraphST <- R6::R6Class(
       # For 'adj', we simply reference it as it does not necessarily need conversion for this context
       self$adj <- self$adata@misc$adj
       n <- nrow(self$adj)
-      self$graph_neigh <-
-        torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)),
+      self$graph_neigh <-torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)),
                      dtype = torch_float32())$to(device = self$device)
       self$dim_input <- dim(self$features)[2]
       self$dim_output <- dim_output
@@ -129,12 +124,12 @@ GraphST <- R6::R6Class(
         
         # Convert to a torch tensor and move to the specified device
         self$feat_sc <-
-          torch_tensor(self$feat_sc, dtype = torch_float32)$to(device = self$device)
+          torch_tensor(self$feat_sc, dtype = torch_float32())$to(device = self$device)
         
         # Repeat the process for self$feat_sp
         self$feat_sp[is.na(self$feat_sp)] <- 0
         self$feat_sp <-
-          torch_tensor(self$feat_sp, dtype = torch_float32)$to(device = self$device)
+          torch_tensor(self$feat_sp, dtype = torch_float32())$to(device = self$device)
         
         # Check if self$adata_sc exists
         if (!is.null(self$adata_sc)) {
@@ -162,8 +157,7 @@ GraphST <- R6::R6Class(
         )
       
       cat("Begin to train ST data...\n")
-      pb <-
-        progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
+      pb <-progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
       
       for (epoch in 1:self$epochs) {
         self$model$train()

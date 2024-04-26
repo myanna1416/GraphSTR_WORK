@@ -195,7 +195,7 @@ get_feature <- function(adata, deconvolution = FALSE) {
     adata_Vars <- subset(adata, features = highly_variable_features)
   }
   
-  assay_data <- GetAssayData(adata_Vars, slot = "counts")
+  assay_data <- GetAssayData(adata_Vars, layer = "counts")
   
   # Check if the data matrix is sparse and convert to dense if necessary
   if (inherits(assay_data, "dgCMatrix")) {  # 'dgCMatrix' is the class for sparse matrices in R
@@ -243,11 +243,7 @@ add_contrastive_label <- function(adata) {
   
   # Concatenate matrices to form the label matrix
   label_CSL <- cbind(one_matrix, zero_matrix)
-  
-  # Store the contrastive label in the adata object under 'misc'
-  if (!"misc" %in% names(adata)) {
-    adata@misc <- list()
-  }
+ 
   adata@misc$label_CSL <- label_CSL
   
   return(adata)
