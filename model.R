@@ -5,7 +5,7 @@ Discriminator <- nn_module(
   
   initialize = function(n_h) {
     # Initialize the bilinear layer
-    self$f_k <- nn_bilinear(input1_features = n_h, input2_features = n_h, output_features = 1)
+    self$f_k <- nn_bilinear(in1_features = n_h, in2_features = n_h, out_features = 1)
     
     # Apply custom weights initialization
     self$apply(self$weights_init)
@@ -15,9 +15,6 @@ Discriminator <- nn_module(
     # Xavier uniform initialization for bilinear layers
     if (inherits(m, "nn_bilinear")) {
       nn_init_xavier_uniform_(m$weight)
-      if (!is.null(m$bias)) {
-        m$bias$data$fill_(0.0)
-      }
     }
   },
   
@@ -104,6 +101,7 @@ Encoder <- nn_module(
   },
   
   forward = function(feat, feat_a, adj) {
+    #Encoder_forward(feat, feat_a, adj)
     z <- nnf_dropout(feat, p = self$dropout, training = self$training)
     z <- torch_mm(z, self$weight1)
     z <- torch_mm(adj, z)
@@ -267,7 +265,4 @@ Encoder_map <- nn_module(
     return(x)
   }
 )
-
-
-
 

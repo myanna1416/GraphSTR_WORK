@@ -1,4 +1,4 @@
-#utils
+#utils.r file
 
 mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_misc = 'emb_pca', random_seed = 2020) {
   # Clustering using the mclust algorithm

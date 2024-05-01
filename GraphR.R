@@ -1,4 +1,3 @@
-
 GraphST <- R6::R6Class(
   "GraphST",
   public = list(
@@ -16,6 +15,13 @@ GraphST <- R6::R6Class(
     dim_output_sc = NULL,
     emb_rec = NULL,
     adata_sc = NULL,
+    model = NULL, 
+    loss_CSL = NULL,
+    optimizer = NULL,
+    optimizer_sc = NULL,
+    model_sc = NULL,
+    optimizer_map = NULL,
+    features_a2 = NULL,
     # Adding adata_sc for scRNA-seq data
     device = "cpu",
     learning_rate = 0.001,
@@ -79,7 +85,13 @@ GraphST <- R6::R6Class(
       self$dim_input_sc <- NULL
       self$dim_output_sc <- NULL
       self$emb_rec <- NULL 
-      
+      self$model <- NULL
+      self$loss_CSL <- NULL
+      self$optimizer <- NULL
+      self$optimizer_sc <- NULL
+      self$model_sc <- NULL
+      self$optimizer_map <- NULL
+      self$features_a2 <- NULL
       
       set.seed(self$random_seed)  # Fix the seed for reproducibility
       
@@ -89,7 +101,7 @@ GraphST <- R6::R6Class(
       self$adata <- construct_interaction(self$adata)
       
       self$adata <- add_contrastive_label(self$adata)
-     
+      
       self$adata <- get_feature(self$adata)
       
       # Convert 'feat' to a torch tensor and move to the specified device
@@ -108,7 +120,7 @@ GraphST <- R6::R6Class(
       self$adj <- self$adata@misc$adj
       n <- nrow(self$adj)
       self$graph_neigh <-torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)),
-                     dtype = torch_float32())$to(device = self$device)
+                                      dtype = torch_float32())$to(device = self$device)
       self$dim_input <- dim(self$features)[2]
       self$dim_output <- dim_output
       
@@ -147,11 +159,10 @@ GraphST <- R6::R6Class(
     train = function() {
       self$model <-
         Encoder$new(self$dim_input, self$dim_output, self$graph_neigh)$to(device = self$device)
-      
       self$loss_CSL <- nn_bce_with_logits_loss()
       self$optimizer <-
         optim_adam(
-          self$model$parameters(),
+          self$model$parameters,
           lr = self$learning_rate,
           weight_decay = self$weight_decay
         )
@@ -159,9 +170,9 @@ GraphST <- R6::R6Class(
       cat("Begin to train ST data...\n")
       pb <-progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
       
-      for (epoch in 1:self$epochs) {
+      for (epoch in seq_len(self$epochs)) {
         self$model$train()
-        
+        self$features_a2 <- self$features_a
         self$features_a2 <-
           permute_features(self$features)  # Ensure this function is defined to shuffle features
         list(hidden_feat, emb, ret, ret_a) <-
@@ -218,8 +229,8 @@ GraphST$set("public", "evaluate", function() {
       model_output <- self$model(self$features, self$features_a, self$adj)
       self$emb_rec <- model_output[[2]]  # Similarly assuming the second element
       
-  
-        self$emb_rec <- self$emb_rec$detach()$cpu()$numpy()
+      
+      self$emb_rec <- self$emb_rec$detach()$cpu()$numpy()
       
       # Assuming self$adata is a list or environment and has an element @misc where 'emb' can be stored
       self$adata@misc$emb <- self$emb_rec

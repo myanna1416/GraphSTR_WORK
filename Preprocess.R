@@ -1,4 +1,4 @@
-#preprocess 
+#preprocess.r file 
 
 
 #' Filter datasets by overlapping highly variable genes
@@ -62,8 +62,7 @@ filter_with_overlap_gene <- function(adata, adata_sc) {
 #' permuted_matrix <- permutation(data_matrix)
 #' print(permuted_matrix)
 permute_features <- function(feature) {
-  set.seed(41) #later check on this seed number 
-  
+  #set.seed(41) #later check on this seed number 
   # Generate indices for the feature matrix
   ids <- seq_len(nrow(feature))
   
@@ -243,7 +242,7 @@ add_contrastive_label <- function(adata) {
   
   # Concatenate matrices to form the label matrix
   label_CSL <- cbind(one_matrix, zero_matrix)
- 
+  
   adata@misc$label_CSL <- label_CSL
   
   return(adata)
@@ -270,7 +269,7 @@ add_contrastive_label <- function(adata) {
 #' print(normalized_adj)
 normalize_adj <- function(adj) {
   # Convert the adjacency matrix to a sparse matrix in coordinate format
-  adj <- Matrix::as(adj, "CsparseMatrix")  # Ensuring it is a sparse matrix
+  adj <- as(adj, "CsparseMatrix")  # Ensuring it is a sparse matrix
   
   # Calculate the sum of each row (degree of nodes)
   rowsum <- rowSums(adj)
@@ -280,7 +279,7 @@ normalize_adj <- function(adj) {
   d_inv_sqrt[is.infinite(d_inv_sqrt)] <- 0  # Replace Inf with 0
   
   # Create a diagonal matrix of D^(-1/2)
-  d_mat_inv_sqrt <- Matrix::Diagonal(x = d_inv_sqrt, sparse = TRUE)
+  d_mat_inv_sqrt <- Matrix::Diagonal(x = d_inv_sqrt)
   
   # Perform symmetric normalization: A' = D^(-1/2) * A * D^(-1/2)
   adj_normalized <- d_mat_inv_sqrt %*% adj %*% d_mat_inv_sqrt

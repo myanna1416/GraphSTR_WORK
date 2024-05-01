@@ -5,8 +5,10 @@ output: html_notebook
 
 
 ```{r}
-library(SpatialExperiment)#library(Matrix) 
+library(SpatialExperiment)
+library(Matrix) 
 library(dplyr)#similar to pandas
+library(rtorch)
 library(torch)#similar to PyTorch in Python
 library(pbapply)#R Equivalent of Python's tqdm
 library(Matrix)#For sparse matrix operations
@@ -44,7 +46,7 @@ spe <- Load10X_Spatial(data.dir = data_dir)
 source("Preprocess.R")
 source("utils.R")
 source("model.R")
-source("ZorFirstRproject.R")
+source("GraphR.R")
 ```
 
 
@@ -55,8 +57,14 @@ graphST_model <- GraphST$new(adata=spe)
 ```
 
 ```{r}
-spe
+print(graphST_model)
 ```
+##Train the model
+```{r}
+graphST_trained <- graphST_model$train() 
+```
+
+
 ```{r}
 # set radius to specify the number of neighbors considered during refinement
 radius <- 50
