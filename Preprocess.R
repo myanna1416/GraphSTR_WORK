@@ -61,12 +61,13 @@ filter_with_overlap_gene <- function(adata, adata_sc) {
 #' print("Permuted matrix:")
 #' permuted_matrix <- permutation(data_matrix)
 #' print(permuted_matrix)
+#' #MIGHT HAVE TO CHANGE THIS 
 permute_features <- function(feature) {
   #set.seed(41) #later check on this seed number 
   # Generate indices for the feature matrix
   ids <- seq_len(nrow(feature))
   
-  # Randomly permute the indices
+  # Randomly permute the indices (shuffling does not work)
   ids <- sample(ids)
   
   # Permute the feature matrix rows according to the shuffled indices

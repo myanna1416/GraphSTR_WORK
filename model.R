@@ -8,14 +8,9 @@ Discriminator <- nn_module(
     self$f_k <- nn_bilinear(in1_features = n_h, in2_features = n_h, out_features = 1)
     
     # Apply custom weights initialization
-    self$reset_parameters()
+    self$apply(self$weights_init)
   },
-  reset_parameters = function() {
-    nn_init_xavier_uniform_(self$f_k$weight)
-    if (!is.null(self$f_k$bias)) {
-      self$f_k$bias$fill_(0)
-    }
-  },
+  
   weights_init = function(m) {
     # Xavier uniform initialization for bilinear layers
     if (inherits(m, "nn_bilinear")) {
@@ -110,13 +105,9 @@ Encoder <- nn_module(
   
   forward = function(feat, feat_a, adj) {
     #Encoder_forward(feat, feat_a, adj)
-    cat("Initial feat dimensions: ", dim(feat), "\n")
     z <- nnf_dropout(feat, p = self$dropout, training = self$training)
     z <- torch_mm(z, self$weight1)
-    cat("Dimensions after weight1 multiplication: ", dim(z), "\n")
     z <- torch_mm(adj, z)
-
-    cat("Dimensions after adj multiplication: ", dim(z), "\n")
     
     hiden_emb <- z
 
