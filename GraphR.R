@@ -154,6 +154,8 @@ GraphST <- R6::R6Class(
         self$n_cell <- self$adata_sc$n_obs
         self$n_spot <- self$adata$n_obs
       }
+      
+      
     },
     
     train = function() {
