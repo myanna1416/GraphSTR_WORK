@@ -92,8 +92,16 @@ permute_features <- function(feature) {
 #' adata <- construct_interaction(adata, n_neighbors = 3)
 #' print(adata@misc$adj)
 construct_interaction <- function(adata, n_neighbors = 3) {
+  # get spatial coordinates of ST data
+  #   this corresponds to the following python code 
+  #     position = adata.obsm['spatial']
   position <- GetTissueCoordinates(adata,scale = NULL)
+  
+  # In Seurat, the coordinate are stored in (row, col)
+  #   convert to (x, y) or (col, row)
   position <- position[,c(2,1)]
+  
+  # and save it in @misc$spatial for later use
   adata@misc$spatial <- position
   
   # Calculate distance matrix using Euclidean distance
@@ -194,6 +202,7 @@ get_feature <- function(adata, deconvolution = FALSE) {
     adata_Vars <- subset(adata, features = highly_variable_features)
   }
   
+  # again, needs to keep in mind that rows are features and cols are cells
   assay_data <- GetAssayData(adata_Vars, layer = "counts")
   
   # Check if the data matrix is sparse and convert to dense if necessary
@@ -207,8 +216,9 @@ get_feature <- function(adata, deconvolution = FALSE) {
   feat_a <- permute_features(feat)  
   
   # Store features and augmented features back into adata object
-  adata@misc$feat <- feat
-  adata@misc$feat_a <- feat_a
+  #   here, tranpose them so that rows are cells and cols are genes/features
+  adata@misc$feat <- t(feat)
+  adata@misc$feat_a <- t(feat_a)
   #adata[['feat']] <- CreateAssayObject(feat)  # Create new assay for original features
   #adata[['feat_a']] <- CreateAssayObject(feat_a) # Create new assay for augmented features
   
@@ -234,7 +244,11 @@ add_contrastive_label <- function(adata) {
   
   #replaceing Adata$X with GetAssayData(adata)
   # Number of observations (spots)
-  n_spot <- nrow(GetAssayData(adata))  # Assuming adata is structured such that adata$X contains the data matrix
+  # Note: since Seurat object (=adata) store 
+  #    cells in columns and features/genes in rows
+  # This should be ncol, instead of nrow.
+  # n_spot <- nrow(GetAssayData(adata))  # Assuming adata is structured such that adata$X contains the data matrix
+  n_spot <- ncol(GetAssayData(adata))  # Assuming adata is structured such that adata$X contains the data matrix
   
   # Create matrices of ones and zeros
   one_matrix <- matrix(1, nrow = n_spot, ncol = 1)

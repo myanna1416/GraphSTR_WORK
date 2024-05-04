@@ -3,15 +3,18 @@ title: "GraphST-R"
 output: html_notebook
 ---
 
-
 ```{r}
+library(R6) #Load the R6 library
+```
+
+```{r, message=FALSE}
 library(SpatialExperiment)
 library(Matrix) 
 library(dplyr)#similar to pandas
+#library(rtorch)
 library(torch)#similar to PyTorch in Python
 library(pbapply)#R Equivalent of Python's tqdm
 library(Matrix)#For sparse matrix operations
-library(R6) #Load the R6 library
 library(Dict)
 library(transport)
 library(otinference)
@@ -22,8 +25,8 @@ library(reticulate)
 library(stats)
 library(stats)
 library(igraph)
-library(leiden)
-library(leidenAlg)
+#library(leiden)
+#library(leidenAlg)
 library(mclust)
 library(DESeq2)
 library(progress)
@@ -42,6 +45,7 @@ spe <- Load10X_Spatial(data.dir = data_dir)
 
 ```
 
+
 ```{r}
 source("Preprocess.R")
 source("utils.R")
@@ -56,9 +60,6 @@ n_clusters <- 7
 graphST_model <- GraphST$new(adata=spe)
 ```
 
-```{r}
-print(graphST_model)
-```
 ##Train the model
 ```{r}
 graphST_trained <- graphST_model$train() 

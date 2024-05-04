@@ -121,6 +121,8 @@ GraphST <- R6::R6Class(
       n <- nrow(self$adj)
       self$graph_neigh <-torch_tensor(as.array(self$adata@misc$graph_neigh) + diag(rep(1, n)),
                                       dtype = torch_float32())$to(device = self$device)
+      
+      # get number of features/genes
       self$dim_input <- dim(self$features)[2]
       self$dim_output <- dim_output
       
@@ -173,18 +175,28 @@ GraphST <- R6::R6Class(
       pb <-progress_bar$new(total = self$epochs, format = "  [:bar] :percent :elapsed/:est")
       
       for (epoch in seq_len(self$epochs)) {
+        
         self$model$train()
         self$features_a2 <- self$features_a
         self$features_a2 <-
           permute_features(self$features)  # Ensure this function is defined to shuffle features
-        list(hidden_feat, emb, ret, ret_a) <-
+
+        # list(hidden_feat, emb, ret, ret_a) <-
+        #   self$model(self$features, self$features_a2, self$adj)
+        list_res <- 
           self$model(self$features, self$features_a2, self$adj)
+
+        hidden_feat <- list_res[[1]]
+        emb <- list_res[[2]]
+        ret <- list_res[[3]]
+        ret_a <- list_res[[4]]
         
         loss_sl_1 <- self$loss_CSL(ret, self$label_CSL)
         loss_sl_2 <- self$loss_CSL(ret_a, self$label_CSL)
-        loss_feat <- mse_loss(self$features, emb)
+        loss_feat <- nnf_mse_loss(self$features, emb)
         
         loss <- self$alpha * loss_feat + self$beta * (loss_sl_1 + loss_sl_2)
+        
         
         self$optimizer$zero_grad()
         loss$backward()
@@ -195,7 +207,7 @@ GraphST <- R6::R6Class(
       
       cat("Optimization finished for ST data!\n")
       
-      no_grad({
+      with_no_grad({
         self$model$eval()
         if (self$deconvolution) {
           self$emb_rec <-
@@ -203,7 +215,9 @@ GraphST <- R6::R6Class(
           return(self$emb_rec)
         } else {
           self$emb_rec <-
-            self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu()$numpy()
+            self$model(self$features, self$features_a, self$adj)[[2]]$detach()$cpu() %>%
+            as_array()
+          
           self$adata@misc[['emb']] <- self$emb_rec
           return(self$adata)
         }

@@ -69,7 +69,7 @@ AvgReadout <- nn_module(
     
     # Element-wise division to get the average
     global_emb <- vsum / row_sum
-    
+
     # Normalize the global embeddings
     normalized_emb <- nnf_normalize(global_emb, p = 2, dim = 2)
     
@@ -94,10 +94,13 @@ Encoder <- nn_module(
     # Reset parameters using Xavier uniform initialization
     self$reset_parameters()
     
-    # Additional modules
-    self$disc <- Discriminator$new(out_features)
+    # Additional modules -- is thie correct?
+    # self$disc <- Discriminator$new(out_features)
+    self$disc <- Discriminator(out_features)
+    
     self$sigm <- nn_sigmoid()
-    self$read <- AvgReadout$new()
+    # self$read <- AvgReadout$new()
+    self$read <- AvgReadout()
   },
   
   reset_parameters = function() {
@@ -112,10 +115,11 @@ Encoder <- nn_module(
     z <- torch_mm(z, self$weight1)
     cat("Dimensions after weight1 multiplication: ", dim(z), "\n")
     z <- torch_mm(adj, z)
+
     cat("Dimensions after adj multiplication: ", dim(z), "\n")
     
     hiden_emb <- z
-    
+
     h <- torch_mm(z, self$weight2)
     h <- torch_mm(adj, h)
     
@@ -131,7 +135,7 @@ Encoder <- nn_module(
     
     g_a <- self$read(emb_a, self$graph_neigh)
     g_a <- self$sigm(g_a)
-    
+
     ret <- self$disc(g, emb, emb_a)
     ret_a <- self$disc(g_a, emb_a, emb)
     
