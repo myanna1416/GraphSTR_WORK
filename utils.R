@@ -19,45 +19,92 @@ mclust_R <- function(adata, num_cluster, modelNames = 'EEE', used_misc = 'emb_pc
   return(adata)
 }
 
-clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method = 'mclust', 
-                       start = 0.1, end = 3.0, increment = 0.01, refinement = FALSE) {
-  # Perform PCA
-  pca <- prcomp(adata@misc[[key]], center = TRUE, scale. = TRUE, retx = TRUE)
-  embedding <- pca$x
-  adata@misc[['emb_pca']] <- embedding
+
+clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method = 'mclust', start = 0.1, end = 3.0, increment = 0.01, refinement = FALSE) {
+  #' Spatial clustering based on the learned representation
+  #'
+  #' @param adata A data object, could be a list or a Seurat object with embeddings stored under obsm.
+  #' @param n_clusters Number of clusters, default is 7.
+  #' @param radius Number of neighbors considered during refinement, default is 50.
+  #' @param key Key for the learned representation in adata, default is 'emb'.
+  #' @param method Clustering method, 'mclust' by default.
+  #' @param start, end, increment Parameters for grid search in clustering refinement.
+  #' @param refinement Logical, whether to refine the predicted labels.
+  #'The reductions slot in a Seurat object typically holds results from dimensional reduction techniques
+  #' such as PCA, t-SNE, or UMAP.
+  #' @return Modified adata with clustering results.
+  #PCA used extensively to simplify data, improve algorithm performance, and discover patterns in high-dimensional data.
+ # if (!"PCA" %in% names(adata[["reductions"]])) {
+  #  adata <- RunPCA(adata, features = VariableFeatures(object = adata))
+  #}
+  
+  #adata <- prcomp(adata$misc$emb, scale. = TRUE)
+  adata <- RunPCA(adata, features = VariableFeatures(object = adata))
+  embedding <- Embeddings(adata, reduction = "pca")[, 1:20]  # Use first 20 PCs
   
   if (method == 'mclust') {
-    # Assuming mclust_R() is a placeholder for an actual mclust implementation in R
-    adata <- mclust_R(adata, used_misc = 'emb_pca', num_cluster = n_clusters)
-    adata@misc[['domain']] <- as.factor(adata@misc[['mclust']])
-  } else if (method == 'leiden') {
-    # Convert data to igraph object
-    dist_matrix <- dist(embedding)
-    graph <- graph_from_adjacency_matrix(as_adjacency_matrix(dist_matrix, sparse = TRUE), mode = "undirected", weighted = TRUE)
-    # Find resolution parameter
-    res <- search_res(adata, n_clusters, use_rep = 'emb_pca', method = method, start = start, end = end, increment = increment)
-    # Run Leiden algorithm
-    community <- leiden(graph, resolution_parameter = res)
-    adata$obs[['domain']] <- factor(community$membership)
-  } else if (method == 'louvain') {
-    # Convert data to igraph object
-    dist_matrix <- dist(embedding)
-    graph <- graph_from_adjacency_matrix(as_adjacency_matrix(dist_matrix, sparse = TRUE), mode = "undirected", weighted = TRUE)
-    # Find resolution parameter
-    res <- search_res(adata, n_clusters, use_rep = 'emb_pca', method = method, start = start, end = end, increment = increment)
-    # Run Louvain algorithm
-    community <- cluster_louvain(graph, resolution = res)
-    adata$obs[['domain']] <- factor(community$membership)
-  }
-  
-  if (refinement) {
-    # Implement refinement logic if required
-    new_type <- refine_label(adata, radius, key = 'domain')
-    adata$obs[['domain']] <- new_type
+    # Fit the model
+    model <- Mclust(embedding, G = n_clusters)
+    cluster_result <- model$classification
+    
+    # Store results back into adata
+    adata <- AddMetaData(adata, cluster_result, col.name = "mclust_cluster")
+    
+    if (refinement) {
+      # Placeholder: refine cluster labels based on additional criteria or radius
+      cat("Refinement is currently not implemented.\n")
+    }
+  } else {
+    stop("Only 'mclust' method is currently implemented in this function.")
   }
   
   return(adata)
 }
+
+
+
+
+
+
+
+# clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method = 'mclust', 
+#                        start = 0.1, end = 3.0, increment = 0.01, refinement = FALSE) {
+#   # Perform PCA
+#   pca <- prcomp(adata@misc[[key]], center = TRUE, scale. = TRUE, retx = TRUE)
+#   embedding <- pca$x
+#   adata@misc[['emb_pca']] <- embedding
+#   
+#   if (method == 'mclust') {
+#     adata <- mclust_R(adata, used_misc = 'emb_pca', num_cluster = n_clusters)
+#     adata@misc[['domain']] <- as.factor(adata@misc[['mclust']])
+#   } else if (method == 'leiden') {
+#     # Convert data to igraph object
+#     dist_matrix <- dist(embedding)
+#     graph <- graph_from_adjacency_matrix(as_adjacency_matrix(dist_matrix, sparse = TRUE), mode = "undirected", weighted = TRUE)
+#     # Find resolution parameter
+#     res <- search_res(adata, n_clusters, use_rep = 'emb_pca', method = method, start = start, end = end, increment = increment)
+#     # Run Leiden algorithm
+#     community <- leiden(graph, resolution_parameter = res)
+#     adata$obs[['domain']] <- factor(community$membership)
+#   } else if (method == 'louvain') {
+#     # Convert data to igraph object
+#     dist_matrix <- dist(embedding)
+#     graph <- graph_from_adjacency_matrix(as_adjacency_matrix(dist_matrix, sparse = TRUE), mode = "undirected", weighted = TRUE)
+#     # Find resolution parameter
+#     res <- search_res(adata, n_clusters, use_rep = 'emb_pca', method = method, start = start, end = end, increment = increment)
+#     # Run Louvain algorithm
+#     community <- cluster_louvain(graph, resolution = res)
+#     adata$obs[['domain']] <- factor(community$membership)
+#   }
+#   
+#   if (refinement) {
+#     # Implement refinement logic if required
+#     new_type <- refine_label(adata, radius, key = 'domain')
+#     adata$obs[['domain']] <- new_type
+#   }
+#   
+#   return(adata)
+# }
 
 # Helper functions (need to be defined or adapted)
 search_res <- function(adata, n_clusters, use_rep, method, start, end, increment) {
