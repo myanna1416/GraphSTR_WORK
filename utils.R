@@ -33,14 +33,14 @@ clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method =
   #'The reductions slot in a Seurat object typically holds results from dimensional reduction techniques
   #' such as PCA, t-SNE, or UMAP.
   #' @return Modified adata with clustering results.
+  #' #PCA is trying to find the most valuable direction in your data 
   #PCA used extensively to simplify data, improve algorithm performance, and discover patterns in high-dimensional data.
  # if (!"PCA" %in% names(adata[["reductions"]])) {
   #  adata <- RunPCA(adata, features = VariableFeatures(object = adata))
   #}
-  
-  #adata <- prcomp(adata$misc$emb, scale. = TRUE)
-  adata <- RunPCA(adata, features = VariableFeatures(object = adata))
-  embedding <- Embeddings(adata, reduction = "pca")[, 1:20]  # Use first 20 PCs
+  embeddings_df <- as.data.frame(adata@misc[['emb']])
+  pca_emb <- fast.prcomp(embeddings_df, scale = TRUE)
+  embedding <- pca_emb$x[,1:20]
   
   if (method == 'mclust') {
     # Fit the model
@@ -49,10 +49,11 @@ clustering <- function(adata, n_clusters = 7, radius = 50, key = 'emb', method =
     
     # Store results back into adata
     adata <- AddMetaData(adata, cluster_result, col.name = "mclust_cluster")
-    
+    adata <- AddMetaData(adata, cluster_result, col.name = "domain")
     if (refinement) {
-      # Placeholder: refine cluster labels based on additional criteria or radius
-      cat("Refinement is currently not implemented.\n")
+      new_type <- refine_label(adata, radius, key='domain')
+      adata[['domain']] = new_type
+      cat("Refinement is currently implemented.\n")
     }
   } else {
     stop("Only 'mclust' method is currently implemented in this function.")
@@ -114,18 +115,20 @@ search_res <- function(adata, n_clusters, use_rep, method, start, end, increment
 #removes the noise from data set
 refine_label <- function(adata, radius = 50, key = 'label') {
   n_neigh <- radius
-  new_type <- character(0) # c()empty array in R 
-  old_type <- as.character(adata$obs[[key]])
+  new_type <- c() # c()empty array in R 
+  old_type <- adata[[key]] 
+  old_type <- old_type[[1]] #adding the single col in old_type so that is is readable 
   
   # Calculate distance
   position <- adata@misc[['spatial']]
-  distance <- ot::dist(position, position, metric = 'euclidean')
+  distance <- dist(position,method = 'euclidean')
+  distance <- as.matrix(distance)
   n_cell <- nrow(distance)
   
   for (i in 1:n_cell) {
     vec <- distance[i, ]
     index <- order(vec)
-    neigh_type <- character(0)
+    neigh_type <- c()
     for (j in 2:(n_neigh + 1)) {
       neigh_type <- c(neigh_type, old_type[index[j]])
     }

@@ -25,7 +25,7 @@ library(reticulate)
 library(stats)
 library(stats)
 library(igraph)
-#library(leiden)
+library(gmodels)
 #library(leidenAlg)
 library(mclust)
 library(DESeq2)
@@ -63,8 +63,21 @@ graphST_model <- GraphST$new(adata=spe)
 ##Train the model
 ```{r}
 graphST_trained <- graphST_model$train() 
+
 ```
 
+```{r}
+graphST_trained <- clustering(graphST_trained, n_clusters, radius = radius, method = tool, refinement = TRUE)
+
+```
+
+```{r}
+summary(embeddings_df)
+```
+
+```{r}
+mclust_model <- Mclust(embeddings_df)
+```
 
 ```{r}
 # set radius to specify the number of neighbors considered during refinement
